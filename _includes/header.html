@@ -8,6 +8,12 @@
         elem.style.display = "none";
       }
     }
+
+    function toggleTheme() {
+      const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = nextTheme;
+      localStorage.setItem("theme", nextTheme);
+    }
   </script>
   <a class="site-sidebar-button" onclick="clickSidebarButton()">
     {%- if site.avatar contains "://" -%}
@@ -18,7 +24,10 @@
     <i class="far fa-user"></i>
   </a>
 
-  <a class="site-title" rel="author" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
+  <a class="site-title" rel="author" href="{{ "/" | relative_url }}">
+    <span class="site-title-primary">{{ site.author | default: site.title | escape }}</span>
+    <span class="site-title-secondary">{{ site.title | escape }}</span>
+  </a>
 
   {% if site.data.navigation %}
     <nav class="site-nav">
@@ -51,4 +60,9 @@
       </ul>
     </nav>
   {% endif %}
+
+  <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle theme">
+    <i class="fas fa-sun theme-toggle-light" aria-hidden="true"></i>
+    <i class="fas fa-moon theme-toggle-dark" aria-hidden="true"></i>
+  </button>
 </div>

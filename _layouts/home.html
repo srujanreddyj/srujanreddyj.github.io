@@ -4,6 +4,48 @@ layout: default
 
 <div class="home">
 
+  <section class="home-hero" aria-labelledby="home-hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow">Data engineering / ML systems / field notes</p>
+      <h1 id="home-hero-title">Build useful data systems, then explain the work clearly.</h1>
+      <p class="hero-summary">{{ site.description | escape }}</p>
+      <div class="hero-actions" aria-label="Primary links">
+        <a class="button button-primary" href="{{ '/resume/' | relative_url }}">View Portfolio</a>
+        <a class="button button-secondary" href="#writing">Read Notes</a>
+      </div>
+    </div>
+
+    <div class="hero-figure" aria-hidden="true">
+      <img src="{{ '/assets/images/hero-data-blueprint.png' | relative_url }}" alt="">
+    </div>
+  </section>
+
+  <section class="focus-strip" aria-label="Focus areas">
+    <p>Focused on</p>
+    <ul>
+      <li>Pipeline orchestration</li>
+      <li>Forecasting</li>
+      <li>Anomaly detection</li>
+      <li>ML web apps</li>
+    </ul>
+  </section>
+
+  <section class="home-statement" aria-label="Profile">
+    <p><strong>{{ site.author | default: site.title | escape }}</strong> works through data engineering and machine learning projects with a builder's bias: design the pipeline, test the model, ship the interface, and write down the tradeoffs.</p>
+    {% if site.data.social -%}
+      <ul class="profile-links">
+        {% for social in site.data.social -%}
+          <li>
+            <a href="{{ social.url }}">
+              <i class="{{ social.icon | default: 'fas fa-link' }}" aria-hidden="true"></i>
+              <span>{{ social.title }}</span>
+            </a>
+          </li>
+        {%- endfor %}
+      </ul>
+    {%- endif %}
+  </section>
+
   {{ content }}
 
   {% if site.paginate %}
@@ -13,21 +55,30 @@ layout: default
   {% endif %}
 
   {%- if posts.size > 0 -%}
+    <div class="section-heading" id="writing">
+      <p class="section-kicker">Writing</p>
+      <h2>Latest notes and projects</h2>
+    </div>
     <ul class="post-list">
       {%- assign date_format = site.date_format | default: "%b %-d, %Y" -%}
       {%- for post in posts -%}
-      <li>
-        <h2>
-          <a href="{{ post.url | relative_url }}">
-            {{ post.title | escape }}
-          </a>
-        </h2>
-        <p class="post-meta">
+      <li class="post-card">
+        <div class="post-card-meta">
           <time class="dt-published" datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">
             {{ post.date | date: date_format }}
           </time>
+          {%- if post.categories and post.categories.size > 0 -%}
+            <span>{{ post.categories | first }}</span>
+          {%- endif -%}
+        </div>
+        <h3>
+          <a href="{{ post.url | relative_url }}">
+            {{ post.title | escape }}
+          </a>
+        </h3>
+        <p class="post-meta">
           {%- if jekyll.environment == "production" and site.disqus -%}
-            • <a href="{{ post.url | relative_url }}#disqus_thread">
+            <a href="{{ post.url | relative_url }}#disqus_thread">
                 <span class="disqus-comment-count" data-disqus-url="{{ post.url | absolute_url }}"></span>
               </a>
           {%- endif -%}
@@ -35,6 +86,7 @@ layout: default
         {%- if post.show_excerpts != false -%}
           <div class="post-excerpt">{{ post.excerpt | strip_html }}</div>
         {%- endif -%}
+        <a class="post-card-link" href="{{ post.url | relative_url }}" aria-label="Read {{ post.title | escape }}">Read post</a>
       </li>
       {%- endfor -%}
     </ul>
@@ -63,4 +115,3 @@ layout: default
     <script id="dsq-count-scr" src="//{{ site.disqus }}.disqus.com/count.js" async></script>
   {%- endif -%}
 </div>
-© 2020 GitHub, Inc.

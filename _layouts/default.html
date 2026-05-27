@@ -8,7 +8,7 @@
     {% endif %}
   </head>
 
-  <body>
+  <body class="layout-{{ page.layout | default: 'default' }}{% if page.url == '/' %} is-home{% endif %}">
     <div class="site-container">
       <header class="site-header">
         {% include header.html %}
