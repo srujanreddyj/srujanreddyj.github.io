@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+site_dir="${1:-_site}"
+max_bytes="${MAX_ASSET_BYTES:-25165824}"
+
+if [[ ! -d "$site_dir" ]]; then
+  echo "Missing site directory: $site_dir" >&2
+  exit 1
+fi
+
+too_large=0
+while IFS= read -r -d '' file; do
+  size="$(wc -c < "$file" | tr -d ' ')"
+  if (( size > max_bytes )); then
+    printf 'Asset too large: %s bytes %s\n' "$size" "$file" >&2
+    too_large=1
+  fi
+done < <(find "$site_dir" -type f -print0)
+
+if (( too_large )); then
+  exit 1
+fi
+
+echo "All assets in $site_dir are under $max_bytes bytes."
