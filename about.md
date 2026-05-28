@@ -4,49 +4,40 @@ title: About
 permalink: /about/
 ---
 
+<section class="page-intro">
+  <p class="section-kicker">Profile</p>
+  <p>I am Srujan Jabbireddy, an engineer focused on data science, machine learning systems, and industrial analytics. This site is where I turn project work into clear technical notes: what I built, what tradeoffs showed up, and what I learned while moving from data to a usable system.</p>
+</section>
 
-### Hello there, fellow Engineers!! 👋
------------------------------------------------------------------------
-I'm Srujan, an Engineer
----
+## What I Work On
 
-Machine Learning | Industrial Engineer | Data Science | Manufacturing
+I like problems where data has to become something operational: a forecast, a dashboard, a detector, a pipeline, or a model-backed application. My background in industrial and systems engineering shapes how I think about machine learning: the model matters, but so do reliability, workflow fit, interpretation, and deployment.
 
-I am learning all about machine learning, so I can build machines that build machines, become intelligent, and make our living abundant.
+<div class="topic-strip">
+  <span>Data Engineering</span>
+  <span>Machine Learning</span>
+  <span>Forecasting</span>
+  <span>Anomaly Detection</span>
+  <span>Industrial Analytics</span>
+</div>
 
+## Current Focus
 
-I am an Industrial and Systems Engineer Graduate, with a specialization in Data Science and Manufacturing track. 
-  - My core interest is in applications of Machine Learning in Industrial Automation.
+- Building practical data pipelines and analytical workflows.
+- Applying machine learning to forecasting, automation, and detection problems.
+- Developing readable project writeups that show both the technical path and the engineering reasoning.
+- Improving the bridge between notebooks, dashboards, APIs, and deployed applications.
 
-Currently, I am looking for a full-time opportunities in Data Science, Machine Learning or related field. I love to learn and contribute towards machine learning community in any and every possible way to achieve the goals of smart machines. I'm passionate about technology, people and society.
+## Tools I Use
 
-- I am proficient in Machine Learning, Data Analysis and Visualization. I am passionate about engineer side of Machine learning, that means developing tools that can bring machine learning live, Computer Vision Engineering and Artificial Intelligence.
+- Python, SQL, and R for analysis and modeling.
+- Pandas, NumPy, scikit-learn, PyTorch, Keras, Plotly, and Dash for applied data work.
+- Airflow, Spark, S3, Redshift, Flask, and cloud tooling for data products and deployment.
+- Statistical modeling, experimental design, time series analysis, and visualization for decision support.
 
-- At present, I am working as Student Assitant, Data Science Intern with Texas A&M Institute of Data Science.
-  - I develop visualization dashboards using plotly and dash
-  - Develop graph network informational dashboards to profile university's thematic research areas.
-  - Develop tools that enable exploration and characterization of current and trending research, visualized research collaborations through coauthor ship networks
+## Selected Work
 
-
-Things I'm good at 🔥
------------------------------------------------------------------------
-- ⚡ Languages: Python, SQL, R.
-
-- Libraries & Tools: NumPy, Pandas, Scikit-Learn, SciPy, Matplotlib, PyTorch, Keras, Plotly.
-
-- 💬 Ask me about: Tech, Mechanics, Industrial Engineering, Neural Networks
-
-- Data Analysis: Exploratory Data Analysis, Quantitative Methods, Strong Statistical Foundation, Model Development & Evaluation Metrics, Data Wrangling, Image Processing, Ensemble Methods, Data Visualization, creating dashboards.
-
-- Industrial Skills: Lean Engineering, Production Inventory Control, Quality Control, Anomaly Detection, Stochastic Programming, Probability, Quantitative Risk Analysis, Design and Analysis of Industrial Experiments 
-
-- Machine Learning Projects:
-  - [***Forecasting of Walmart Sales - M5 Competition***](https://srujanreddyj.github.io/portfolio/2020/09/25/M5_1.html)
-  - [***Amenities (Object) Detection in a house***](https://github.com/srujanreddyj/amenity-object-detection)
-  - [***Anomaly Detection in Electicity Consumption***](https://srujanreddyj.github.io/learnings/2021/01/29/anomaly.html)
-  - [***Netflix Dashboard***](https://project-visual-1.herokuapp.com/)
-  - Academic Project - [***Image Classification on CIFAR-10 using CNN***](https://github.com/srujanreddyj/ENGINEERING_DATA_ANALYSIS-ISEN-613---ACADEMIC_PROJECT)
-  - Academic Project - [RAM - Repelling Attracting Metropolis Algorithm](https://github.com/srujanreddyj/STAT-654-Term-Project)
-  - Academic Project - [***Categorizing and Assessing Financial Risk for Health Insurance Companies***](https://drive.google.com/file/d/1Bq1y1wpQmBldJrNZf1nOw4X72YXfZmuK/view?usp=sharing)
-
-
+- [Data Pipeline Orchestration]({{ '/learnings/2021/04/30/etl.html' | relative_url }}) - an ETL pipeline using Airflow, Spark, S3, and Redshift.
+- [Anomaly Detection in Electricity Consumption]({{ '/learnings/2021/01/29/anomaly.html' | relative_url }}) - a practical look at unusual-pattern detection in energy usage.
+- [M5 Forecasting Series]({{ '/learnings/2020/09/25/M5_1.html' | relative_url }}) - exploratory analysis and forecasting work on retail demand data.
+- [End-to-End Machine Learning Web App]({{ '/learnings/2020/10/02/airbnb.html' | relative_url }}) - an object detection application built around real product workflow constraints.

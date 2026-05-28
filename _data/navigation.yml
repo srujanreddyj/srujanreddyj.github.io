@@ -1,16 +1,10 @@
 - title: About
   url: /about/
 - title: Portfolio
-  url: /resume/
-- title: Years
-  url: /years/
-- title: Categories
+  url: /portfolio/
+- title: Writing
+  url: /writing/
+- title: Topics
   url: /categories/
-- title: Tags
-  url: /tags/
-- title: More
-  sublinks:
-    - title: FAQ
-      url: /faq/
-    - title: Docs
-      url: /docs/
+- title: Archive
+  url: /years/

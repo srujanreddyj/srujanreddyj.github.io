@@ -1,5 +1,7 @@
 ---
 layout: archive-years
-title: Years
+title: Archive
 permalink: /years/
 ---
+
+Every post, grouped by year.
