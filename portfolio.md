@@ -6,7 +6,7 @@ permalink: /portfolio/
 
 <section class="portfolio-intro">
   <p class="section-kicker">Project index</p>
-  <p>Selected project writeups across data engineering, forecasting, anomaly detection, and machine learning applications. Each article is written as a record of the problem, approach, tradeoffs, and implementation details.</p>
+  <p>Selected writeups on data infrastructure, AI workflow foundations, pipeline design, validation, versioning, and applied machine learning systems. Each article records the problem, implementation path, and engineering tradeoffs.</p>
 </section>
 
 <div class="portfolio-list">

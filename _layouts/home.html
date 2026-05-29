@@ -6,8 +6,8 @@ layout: default
 
   <section class="home-hero" aria-labelledby="home-hero-title">
     <div class="hero-copy">
-      <p class="eyebrow">Data engineering / ML systems / field notes</p>
-      <h1 id="home-hero-title">Build useful data systems, then explain the work clearly.</h1>
+      <p class="eyebrow">AI data infrastructure / ML workflows / field notes</p>
+      <h1 id="home-hero-title">Build reliable data systems for model-ready AI workflows.</h1>
       <p class="hero-summary">{{ site.description | escape }}</p>
       <div class="hero-actions" aria-label="Primary links">
         <a class="button button-primary" href="{{ '/portfolio/' | relative_url }}">View Portfolio</a>
@@ -20,18 +20,8 @@ layout: default
     </div>
   </section>
 
-  <section class="focus-strip" aria-label="Focus areas">
-    <p>Focused on</p>
-    <ul>
-      <li>Pipeline orchestration</li>
-      <li>Forecasting</li>
-      <li>Anomaly detection</li>
-      <li>ML web apps</li>
-    </ul>
-  </section>
-
   <section class="home-statement" aria-label="Profile">
-    <p><strong>{{ site.author | default: site.title | escape }}</strong> works through data engineering and machine learning projects with a builder's bias: design the pipeline, test the model, ship the interface, and write down the tradeoffs.</p>
+    <p><strong>{{ site.author | default: site.title | escape }}</strong> builds data infrastructure for AI and machine learning workflows: ingestion, validation, metadata, versioning, and the engineering tradeoffs between raw data and reliable model inputs.</p>
     {% if site.data.social -%}
       <ul class="profile-links">
         {% for social in site.data.social -%}

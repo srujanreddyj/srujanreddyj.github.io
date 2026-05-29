@@ -6,34 +6,34 @@ permalink: /about/
 
 <section class="page-intro">
   <p class="section-kicker">Profile</p>
-  <p>I am Srujan Jabbireddy, an engineer focused on data science, machine learning systems, and industrial analytics. This site is where I turn project work into clear technical notes: what I built, what tradeoffs showed up, and what I learned while moving from data to a usable system.</p>
+  <p>I am Srujan Jabbireddy, a data infrastructure engineer focused on building reliable systems for AI and machine learning workflows. My work centers on turning raw, messy, high-volume data into validated, versioned, and model-ready datasets for training, evaluation, and production use.</p>
 </section>
 
 ## What I Work On
 
-I like problems where data has to become something operational: a forecast, a dashboard, a detector, a pipeline, or a model-backed application. My background in industrial and systems engineering shapes how I think about machine learning: the model matters, but so do reliability, workflow fit, interpretation, and deployment.
+This site is where I document the systems I build: ingestion pipelines, data quality checks, dataset versioning, metadata catalogs, ML data loaders, and the engineering tradeoffs involved in moving from raw data to usable AI infrastructure.
 
 <div class="topic-strip">
-  <span>Data Engineering</span>
-  <span>Machine Learning</span>
-  <span>Forecasting</span>
-  <span>Anomaly Detection</span>
-  <span>Industrial Analytics</span>
+  <span>Data Infrastructure</span>
+  <span>AI Workflows</span>
+  <span>Dataset Versioning</span>
+  <span>Data Quality</span>
+  <span>ML Data Loading</span>
 </div>
 
 ## Current Focus
 
-- Building practical data pipelines and analytical workflows.
-- Applying machine learning to forecasting, automation, and detection problems.
-- Developing readable project writeups that show both the technical path and the engineering reasoning.
-- Improving the bridge between notebooks, dashboards, APIs, and deployed applications.
+- Building ingestion pipelines for messy, high-volume data.
+- Designing validation checks that make datasets trustworthy before training or evaluation.
+- Versioning datasets and metadata so experiments are reproducible.
+- Improving the path from raw data to model-ready training, evaluation, and production inputs.
 
 ## Tools I Use
 
-- Python, SQL, and R for analysis and modeling.
-- Pandas, NumPy, scikit-learn, PyTorch, Keras, Plotly, and Dash for applied data work.
-- Airflow, Spark, S3, Redshift, Flask, and cloud tooling for data products and deployment.
-- Statistical modeling, experimental design, time series analysis, and visualization for decision support.
+- Python and SQL for data engineering, validation, and analysis.
+- Pandas, NumPy, PyTorch, scikit-learn, Plotly, and Dash for applied ML and data workflows.
+- Airflow, Spark, S3, Redshift, Flask, and cloud tooling for pipelines, storage, and production systems.
+- Metadata, quality checks, versioned datasets, and reproducible ML data preparation.
 
 ## Selected Work
 
