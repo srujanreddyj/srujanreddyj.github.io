@@ -4,38 +4,6 @@ layout: default
 
 <div class="home">
 
-  <section class="home-hero" aria-labelledby="home-hero-title">
-    <div class="hero-copy">
-      <p class="eyebrow">AI data infrastructure / ML workflows / field notes</p>
-      <h1 id="home-hero-title">Build reliable data systems for model-ready AI workflows.</h1>
-      <p class="hero-summary">{{ site.description | escape }}</p>
-      <div class="hero-actions" aria-label="Primary links">
-        <a class="button button-primary" href="{{ '/portfolio/' | relative_url }}">View Portfolio</a>
-        <a class="button button-secondary" href="#writing">Read Notes</a>
-      </div>
-    </div>
-
-    <div class="hero-figure" aria-hidden="true">
-      <img src="{{ '/assets/images/hero-data-blueprint.png' | relative_url }}" alt="">
-    </div>
-  </section>
-
-  <section class="home-statement" aria-label="Profile">
-    <p><strong>{{ site.author | default: site.title | escape }}</strong> builds data infrastructure for AI and machine learning workflows: ingestion, validation, metadata, versioning, and the engineering tradeoffs between raw data and reliable model inputs.</p>
-    {% if site.data.social -%}
-      <ul class="profile-links">
-        {% for social in site.data.social -%}
-          <li>
-            <a href="{{ social.url }}">
-              <i class="{{ social.icon | default: 'fas fa-link' }}" aria-hidden="true"></i>
-              <span>{{ social.title }}</span>
-            </a>
-          </li>
-        {%- endfor %}
-      </ul>
-    {%- endif %}
-  </section>
-
   {{ content }}
 
   {% if site.paginate %}
@@ -45,11 +13,23 @@ layout: default
   {% endif %}
 
   {%- if posts.size > 0 -%}
-    <div class="section-heading" id="writing">
-      <p class="section-kicker">Writing</p>
-      <h2>Latest notes and projects</h2>
-    </div>
-    <ul class="post-list">
+    <section class="home-journal" aria-labelledby="home-title">
+      <header class="home-journal-header">
+        <h1 id="home-title">{{ site.author | default: site.title | escape }}'s Blog</h1>
+        <p>{{ site.description | escape }}</p>
+        {% if site.data.navigation %}
+          <nav class="home-journal-nav" aria-label="Home navigation">
+            <a href="{{ '/' | relative_url }}">Home</a>
+            {% for nav in site.data.navigation %}
+              {% if nav.title %}
+                <a href="{{ nav.url | relative_url }}">{{ nav.title | escape }}</a>
+              {% endif %}
+            {% endfor %}
+          </nav>
+        {% endif %}
+      </header>
+
+      <ul class="post-list" id="writing">
       {%- assign date_format = site.date_format | default: "%b %-d, %Y" -%}
       {%- for post in posts -%}
       <li class="post-card">
@@ -61,25 +41,13 @@ layout: default
             <span>{{ post.categories | first }}</span>
           {%- endif -%}
         </div>
-        <h3>
-          <a href="{{ post.url | relative_url }}">
-            {{ post.title | escape }}
-          </a>
-        </h3>
-        <p class="post-meta">
-          {%- if jekyll.environment == "production" and site.disqus -%}
-            <a href="{{ post.url | relative_url }}#disqus_thread">
-                <span class="disqus-comment-count" data-disqus-url="{{ post.url | absolute_url }}"></span>
-              </a>
-          {%- endif -%}
-        </p>
-        {%- if post.show_excerpts != false -%}
-          <div class="post-excerpt">{{ post.excerpt | strip_html }}</div>
-        {%- endif -%}
-        <a class="post-card-link" href="{{ post.url | relative_url }}" aria-label="Read {{ post.title | escape }}">Read post</a>
+        <h2>
+          <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+        </h2>
       </li>
       {%- endfor -%}
-    </ul>
+      </ul>
+    </section>
 
     {% if site.paginate %}
       <div class="pager">
