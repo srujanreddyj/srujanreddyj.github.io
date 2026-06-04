@@ -11,11 +11,8 @@ tags: [python, performance, concurrency, threads, processes, gil]
 _A simple, visual guide to CPU-bound work, the GIL, and why `ProcessPoolExecutor` sometimes beats `ThreadPoolExecutor` by a lot._
 
 You have a batch job that takes 8 seconds.
-
 You split it into 8 pieces.
-
 You throw 8 threads at it.
-
 It still takes 8 seconds.
 
 That feels wrong the first time you see it. You reached for parallelism, paid the complexity cost, and got basically nothing back. Sometimes you even make it slower.
@@ -74,15 +71,20 @@ On your machine, you may need to tune the loop count so each chunk takes about 1
 Here are the three versions side by side:
 
 ```python
+## CPU
 start = time.perf_counter()
 results = [transform(chunk) for chunk in chunks]
 print(f"Sequential: {time.perf_counter() - start:.2f}s")
 
+
+## THREAD
 start = time.perf_counter()
 with ThreadPoolExecutor(max_workers=8) as ex:
     results = list(ex.map(transform, chunks))
 print(f"Threads:    {time.perf_counter() - start:.2f}s")
 
+
+## Process
 start = time.perf_counter()
 with ProcessPoolExecutor(max_workers=4) as ex:
     results = list(ex.map(transform, chunks))
@@ -655,7 +657,5 @@ Adding threads does not automatically make Python CPU work run in parallel.
 If your workload is pure Python computation, `ThreadPoolExecutor` can leave you staring at one busy core and seven disappointed expectations. `ProcessPoolExecutor` works better because each worker process gets its own interpreter and its own GIL.
 
 That is the performance lesson:
-
-Use threads when the program is waiting.
-
-Use processes when the program is working.
+- Use threads when the program is waiting.
+- Use processes when the program is working.
