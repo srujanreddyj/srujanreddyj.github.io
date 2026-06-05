@@ -15,7 +15,7 @@ layout: default
   {%- if posts.size > 0 -%}
     <section class="home-journal" aria-labelledby="home-title">
       <header class="home-journal-header">
-        <h1 id="home-title">{{ site.author | default: site.title | escape }}'s Blog</h1>
+        <h1 id="home-title">{{ site.title | escape }}</h1>
         <p>{{ site.description | escape }}</p>
         {% if site.data.navigation %}
           <nav class="home-journal-nav" aria-label="Home navigation">
