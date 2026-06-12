@@ -10,6 +10,8 @@ tags: [markdown, multimodal, lakehouse, embeddings, lancedb, ray, modal, dedupli
 
 In the first version of this project, I wrote about the gap between a notebook embedding workflow and a production-shaped multimodal data pipeline. These notes go one layer deeper: what I built, why I used four modalities, where the architecture came from, and how the deduplication and versioning pieces map to the patterns used in larger training data systems.
 
+For the broader architecture and motivation, start with [Serverless Multimodal Data Lakehouse]({% post_url 2026-06-01-multimodal-embedding-pipeline-lancedb %}). This post is the implementation companion.
+
 ## What I Built
 
 The system ingests four modalities:
@@ -235,4 +237,3 @@ The architecture is less about any single tool and more about the order of trust
 Start with immutable blobs. Attach metadata instead of deleting records. Version datasets with manifests. Keep embeddings and provenance queryable. Run cheap dedup before expensive dedup. Treat every stage as a contract with the next one.
 
 That is the difference between an embedding demo and a multimodal training data system.
-

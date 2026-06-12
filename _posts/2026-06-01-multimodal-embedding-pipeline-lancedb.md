@@ -27,6 +27,10 @@ I built this pipeline to learn these lessons the hard way. Let me show you the a
 
 The goal was to turn raw multimodal data into model-ready features that could be searched, filtered, joined, and reused across training jobs. I wanted the pipeline to support text, images, video, and audio without treating each modality as a separate one-off project.
 
+![Horizontal architecture diagram for the serverless multimodal data lakehouse](https://raw.githubusercontent.com/srujanreddyj/distributed-embedding-search-lakehouse/main/docs/assets/horizontal_excalidraw.png)
+
+_The high-level pipeline: source connectors, content-addressed storage, distributed preprocessing, embedding, cataloging, versioning, and training-ready outputs._
+
 At a high level, the system has twelve components:
 
 1. **Dataset registry** for tracking datasets, sources, versions, and schemas.
