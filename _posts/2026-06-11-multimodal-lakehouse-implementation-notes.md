@@ -56,7 +56,7 @@ Four modalities forced every abstraction to be honest. If a schema only worked f
 
 ## The Inspiration: Netflix's Curation Pillars
 
-The spark for this project came from a Netflix data engineering talk on curating large datasets for generative models. The framing that stuck with me was that multimodal data curation needs three pillars.
+The spark for this project came from a [Netflix data engineering](https://youtu.be/CrcvEEB4FW4?si=o7QWqMIEC1bj1K8u) talk on curating large datasets for generative models. The framing that stuck with me was that multimodal data curation needs three pillars.
 
 **Models.** You need a diverse set of models just to understand, annotate, and score raw data: vision models, text embedders, audio encoders, speech models, and quality classifiers.
 
@@ -118,9 +118,9 @@ First, I wanted to demonstrate the underlying architecture instead of hiding it 
 
 The point is not that custom CAS is always better. The point is that immutable blobs plus pointer manifests are the core idea. Whether you get that from a platform or implement it directly depends on the project.
 
-## Important Sidebar: Deduplication
+## Deduplication
 
-While working on this pipeline, I also looked at deduplication strategies from modern LLM and multimodal training pipelines, including Microsoft's Phi-style data reports. The structural pattern is familiar: exact dedup first, then cheaper fuzzy methods, then embedding-based semantic dedup, with provenance kept throughout.
+While working on this pipeline, I looked at deduplication strategies from modern LLM and multimodal training pipelines, (also read through the latest Microsoft's Phi-style) reports. The structural pattern is familiar: exact dedup first, then cheaper fuzzy methods, then embedding-based semantic dedup, with provenance kept throughout.
 
 Here is how those ideas map to this project:
 
@@ -132,22 +132,7 @@ Here is how those ideas map to this project:
 | Per-source licensing and provenance | License and source fields live in the catalog |
 | Source-specific heuristics | Text, image, video, and audio each have modality-specific quality checks |
 
-The honest framing is this:
 
-My pipeline implements the same structural pattern: exact dedup, embedding-based near-dedup, rule-based quality gates, soft filtering, and provenance tracking. At production scale, I would add MinHash for cheaper fuzzy text dedup before embeddings, learned quality classifiers instead of binary rules, and cross-dataset dedup with priority ordering. Those are extensions of the same stages, not a new architecture.
-
-## What This Project Does Not Yet Do
-
-The project is intentionally smaller than a full industrial curation stack. Some production systems add:
-
-- **MinHash/LSH fuzzy dedup** for token-level text similarity before embedding.
-- **Boilerplate removal and templated page detection** for raw HTML crawls.
-- **Learned quality classifiers** that bucket data into quality tiers.
-- **LLM-based filtering or judging** for ambiguous high-value examples.
-- **Cross-dataset dedup with global drop order** so higher-priority sources win conflicts.
-- **Data mixture optimization** across topics, quality tiers, languages, and education levels.
-
-The key is that these would not require a new pipeline. They would fit into the existing quality, deduplication, catalog, and versioning stages.
 
 ## Per-Modality Deduplication Landscape
 
@@ -160,7 +145,7 @@ Different modalities need different deduplication tools. Exact hashing is univer
 | Semantic | Embedding clusters / SemDeDup | CLIP embeddings + clustering | CLIP on keyframes + pooling | Whisper transcription or spectral embeddings |
 | Structural | Boilerplate removal, suffix arrays | Corruption and resolution checks | Scene splitting before dedup | Silence and noise removal |
 
-My project implements:
+I tried implementing :
 
 | Layer | Status |
 | --- | --- |
@@ -171,27 +156,40 @@ My project implements:
 
 Production pipelines usually run these layers in cost order. The cheapest pass removes the obvious duplicates first, so the expensive semantic pass sees fewer records.
 
+## This Pipeline Does Not Do
+
+The project is intentionally smaller than a full industrial curation stack. Some production systems add:
+
+- **MinHash/LSH fuzzy dedup** for token-level text similarity before embedding.
+- **Boilerplate removal and templated page detection** for raw HTML crawls.
+- **Learned quality classifiers** that bucket data into quality tiers.
+- **LLM-based filtering or judging** for ambiguous high-value examples.
+- **Cross-dataset dedup with global drop order** so higher-priority sources win conflicts.
+- **Data mixture optimization** across topics, quality tiers, languages, and education levels.
+
+The key is that these would not require a new pipeline. They would fit into the existing quality, deduplication, catalog, and versioning stages.
+
 ## MinHash and LSH: The Intuition
 
 MinHash/LSH is one of the standard techniques for large-scale text deduplication.
 
 Imagine two documents. You want to know how similar they are without comparing every document pair in the corpus.
 
-The process has four steps.
+The process has four steps:
 
-**Shingling.** Break each document into overlapping n-grams, such as 5-word windows. Each document becomes a set of shingles.
+1. **Shingling.** Break each document into overlapping n-grams, such as 5-word windows. Each document becomes a set of shingles.
 
-**Jaccard similarity.** Compare two shingle sets using intersection over union:
+2. **Jaccard similarity.** Compare two shingle sets using intersection over union:
 
-```text
-similarity = |intersection| / |union|
-```
+   ```text
+   similarity = |intersection| / |union|
+   ```
 
-If two documents share 80 percent of their shingles, their Jaccard similarity is 0.8.
+   If two documents share 80 percent of their shingles, their Jaccard similarity is 0.8.
 
-**MinHash.** Computing Jaccard for every pair is too expensive. MinHash applies multiple hash functions to each document's shingle set and keeps the minimum hash value from each function. That produces a small fixed-size signature, such as 128 integers per document. The probability that two signatures match at a position approximates their Jaccard similarity.
+3. **MinHash.** Computing Jaccard for every pair is too expensive. MinHash applies multiple hash functions to each document's shingle set and keeps the minimum hash value from each function. That produces a small fixed-size signature, such as 128 integers per document. The probability that two signatures match at a position approximates their Jaccard similarity.
 
-**Locality-sensitive hashing.** Split each signature into bands. If two documents match in any band, they become candidate duplicates. This avoids comparing every pair. Only documents that land in the same bucket are checked.
+4. **Locality-sensitive hashing.** Split each signature into bands. If two documents match in any band, they become candidate duplicates. This avoids comparing every pair. Only documents that land in the same bucket are checked.
 
 The result is that you avoid an O(n²) all-pairs comparison and get something much closer to O(n) candidate generation, with high recall for duplicates above a chosen threshold.
 
