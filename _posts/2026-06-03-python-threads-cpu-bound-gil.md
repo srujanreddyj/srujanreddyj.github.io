@@ -68,27 +68,34 @@ On your machine, you may need to tune the loop count so each chunk takes about 1
 
 ## Runnable Benchmark
 
-Here are the three versions side by side:
+Here are the three versions side by side in one runnable script:
 
 ```python
-## CPU
-start = time.perf_counter()
-results = [transform(chunk) for chunk in chunks]
-print(f"Sequential: {time.perf_counter() - start:.2f}s")
+import time
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
+def transform(chunk):
+    total = 0
+    for i in range(10_000_000):
+        total += i * i
+    return total + chunk
 
-## THREAD
-start = time.perf_counter()
-with ThreadPoolExecutor(max_workers=8) as ex:
-    results = list(ex.map(transform, chunks))
-print(f"Threads:    {time.perf_counter() - start:.2f}s")
+if __name__ == "__main__":
+    chunks = list(range(8))
 
+    start = time.perf_counter()
+    results = [transform(chunk) for chunk in chunks]
+    print(f"Sequential: {time.perf_counter() - start:.2f}s")
 
-## Process
-start = time.perf_counter()
-with ProcessPoolExecutor(max_workers=4) as ex:
-    results = list(ex.map(transform, chunks))
-print(f"Processes:  {time.perf_counter() - start:.2f}s")
+    start = time.perf_counter()
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        results = list(ex.map(transform, chunks))
+    print(f"Threads:    {time.perf_counter() - start:.2f}s")
+
+    start = time.perf_counter()
+    with ProcessPoolExecutor(max_workers=4) as ex:
+        results = list(ex.map(transform, chunks))
+    print(f"Processes:  {time.perf_counter() - start:.2f}s")
 ```
 
 On a typical machine, the threaded version is the surprise: it often stays close to the sequential runtime, while the process-based version gets a real speedup.
@@ -564,6 +571,53 @@ Starting processes is also heavier than starting threads.
 That overhead is why process pools shine on **big enough tasks**, but can disappoint on tiny ones.
 
 Process pools buy real parallelism, but you pay for it in startup cost and data movement.
+
+## Process Pool Details That Matter
+
+Once you move from a toy benchmark to real data, two details matter a lot: batching and pickling.
+
+### Use Chunksize for Many Small Records
+
+If you have a large list of small records, sending one record at a time to worker processes can waste a lot of time on scheduling and serialization overhead.
+
+In that case, `chunksize` tells the executor to send work to each process in batches:
+
+```python
+with ProcessPoolExecutor() as ex:
+    results = list(ex.map(transform, records, chunksize=1000))
+```
+
+The right value depends on the size of each record and how expensive `transform()` is. If each item takes meaningful CPU time, a smaller `chunksize` can be fine. If each item is tiny, batching can make a big difference.
+
+The goal is to avoid paying process-pool overhead for every single record.
+
+### Use a Top-Level Function
+
+Process pools need to serialize the function and data sent to worker processes. In practice, that means the worker function should be importable and picklable.
+
+This is good:
+
+```python
+def transform(record):
+    ...
+```
+
+This is fragile or broken with process pools:
+
+```python
+transform = lambda record: ...
+```
+
+Top-level named functions are easier for worker processes to import. Lambdas, nested functions, and closures often fail because they cannot be pickled cleanly.
+
+That is also why the benchmark uses:
+
+```python
+if __name__ == "__main__":
+    ...
+```
+
+That guard prevents child processes from accidentally re-running the whole script when they start up.
 
 ## How to Recognize This Bug in Real Code
 
