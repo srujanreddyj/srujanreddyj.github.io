@@ -10,7 +10,7 @@ tags: [markdown, multimodal, embeddings, lancedb, ray, machine-learning, data-en
 
 Every machine learning tutorial shows the same pattern: load a dataset, preprocess it in a notebook, embed it, train a model. It looks simple. It works on 1,000 samples. It fails on 10 million.
 
-The gap between "works in a notebook" and "works in production" is where most ML projects die. I have spent the last few months building that bridge: a 12-component multimodal training data pipeline that handles text, images, video, and audio at scale. This post is about what I learned crossing that gap.
+The gap between "works in a notebook" and "works in production" is where most ML projects die. I have spent the last few weeks building that bridge: a 12-component multimodal training data pipeline that handles text, images, video, and audio at scale. This post is about what I learned crossing that gap.
 
 ## What "Production Pattern" Actually Means
 
@@ -141,8 +141,11 @@ I would also invest earlier in small local integration tests that run one or two
 
 ## Final Takeaway
 
-The main thing I learned is that multimodal embedding infrastructure is not about running a model over files. It is about building a reliable feature production system.
+The main thing I learned is that [multimodal embedding infrastructure](https://srujanreddyj--multimodal-lakehouse-search-web-ui.modal.run/) is not about running a model over files. It is about building a reliable feature production system.
 
 The model creates vectors. The pipeline creates trust.
 
 That trust comes from curation, explicit schemas, durable storage, distributed execution, queryable feature storage, and lineage. Once those pieces are in place, embeddings become more than one-off experiment artifacts. They become reusable training data infrastructure.
+
+
+DEMO Embedding: https://srujanreddyj--multimodal-lakehouse-search-web-ui.modal.run/
