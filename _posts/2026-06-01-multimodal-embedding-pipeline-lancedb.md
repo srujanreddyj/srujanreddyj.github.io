@@ -8,20 +8,20 @@ tags: [markdown, multimodal, embeddings, lancedb, ray, machine-learning, data-en
 
 # Serverless Multimodal Data Lakehouse
 
-Every machine learning tutorial shows the same pattern: load a dataset, preprocess it in a notebook, embed it, train a model. It looks simple. It works on 1,000 samples. It fails on 10 million.
+Most machine learning tutorials hide the part that becomes painful later: load a dataset, preprocess it in a notebook, embed it, train a model. That pattern works on 1,000 samples. It starts breaking when the same workflow needs to handle millions of files, multiple media types, retries, lineage, and reuse.
 
-The gap between "works in a notebook" and "works in production" is where most ML projects die. I have spent the last few weeks building that bridge: a 12-component multimodal training data pipeline that handles text, images, video, and audio at scale. This post is about what I learned crossing that gap.
+I spent the last few weeks building across that gap: a 12-stage multimodal training data pipeline that handles text, images, video, and audio. This post is the overview of what changed when the project moved from "embed some files" to "produce features that another training job can trust."
 
 ## What "Production Pattern" Actually Means
 
-Before I describe what I built, here is what Netflix and Anyscale taught me about the shape of real data infrastructure:
+Before I describe what I built, here is the framing I took from Netflix's data curation work and Anyscale's batch inference patterns:
 
 - **Curation is a first-class pillar, not preprocessing.** The data you keep matters more than how you transform it.
 - **Storage and streaming must be disaggregated.** Content-addressed blobs give durability. Ephemeral shards give throughput.
 - **Scaling is not linear.** Ray Data `map_batches` has knobs most tutorials skip: memory limits, actor pools, batch sizes, and concurrency. Getting them wrong means OOMs or 10x slower pipelines.
 - **Boundaries are where bugs live.** Every assumption about "this will be a dict" or "this path exists" breaks at scale.
 
-I built this pipeline to learn these lessons the hard way. Let me show you the architecture, then the battle scars.
+Those ideas shaped the architecture. The useful part was seeing where they held up once the code had to process real text, images, video, and audio.
 
 ## The Pipeline I Built
 
@@ -31,7 +31,7 @@ The goal was to turn raw multimodal data into model-ready features that could be
 
 _The high-level pipeline: source connectors, content-addressed storage, distributed preprocessing, embedding, cataloging, versioning, and training-ready outputs._
 
-At a high level, the system has twelve components:
+At a high level, the system has twelve stages:
 
 1. **Dataset registry** for tracking datasets, sources, versions, and schemas.
 2. **Raw asset ingestion** for pulling files from local storage, object storage, or external sources.
@@ -125,9 +125,7 @@ The bugs that taught me the most were not glamorous model bugs. They were bounda
 - Assuming local paths and distributed worker paths meant the same thing.
 - Assuming a downstream training job would know which feature version it was reading.
 
-Each assumption became a contract. Each contract became a schema, validation rule, or lineage field.
-
-That is probably the most practical lesson I learned: production ML data pipelines are mostly contract management. Models matter, but the system survives because data contracts are explicit.
+Those assumptions became schemas, validation rules, and lineage fields. The model code was not the fragile part. The fragile part was every undocumented handoff between stages.
 
 ## What I Would Do Differently
 
@@ -141,7 +139,7 @@ I would also invest earlier in small local integration tests that run one or two
 
 ## Final Takeaway
 
-The main thing I learned is that [multimodal embedding infrastructure](https://srujanreddyj--multimodal-lakehouse-search-web-ui.modal.run/) is not about running a model over files. It is about building a reliable feature production system.
+The main thing I learned is that [multimodal embedding infrastructure](https://srujanreddyj--multimodal-lakehouse-search-web-ui.modal.run/) is not the model call. It is the chain of decisions that makes a feature safe to reuse.
 
 The model creates vectors. The pipeline creates trust.
 

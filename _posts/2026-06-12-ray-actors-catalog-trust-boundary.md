@@ -117,7 +117,7 @@ Some bugs are embarrassing precisely because they are so small: one missing argu
 
 Here are three that cost real debugging time.
 
-## 1. The Missing String Argument
+### 1. The Missing String Argument
 
 The COCO connector had this line:
 
@@ -135,7 +135,7 @@ A single missing argument meant the entire ingestion stage crashed before prepro
 
 The lesson: source connectors need tiny smoke tests. Dataset schemas are brittle, and one bad field access can stop the whole pipeline.
 
-## 2. A Pandas Series Is Not a Dict
+### 2. A Pandas Series Is Not a Dict
 
 The shard writer pulled a record from the catalog and did a simple truthiness check:
 
@@ -162,7 +162,7 @@ record = row.to_dict()
 
 The lesson: catalog rows, manifests, and shards all need explicit interchange shapes. Do not let library-specific objects leak across stage boundaries.
 
-## 3. Text Content Is Not a File Path
+### 3. Text Content Is Not a File Path
 
 Sharding crashed with:
 
@@ -195,7 +195,7 @@ The lesson: a shared catalog column can mean different things per modality. Down
 
 These were not typos. They were architectural lessons that only surfaced under real conditions: library version drift, deployment filesystems, and embedding-space math.
 
-## 1. CLIP's Return Shape Changed Under Me
+### 1. CLIP's Return Shape Changed Under Me
 
 Image preprocessing crashed in Modal with:
 
@@ -224,7 +224,7 @@ The real rule: do not assume "pooler output" means "pre-projection." Inspect the
 
 The lesson: model wrappers are conveniences, not contracts.
 
-## 2. LanceDB Could Not Rename Files on a Modal Volume
+### 2. LanceDB Could Not Rename Files on a Modal Volume
 
 Catalog creation failed with:
 
@@ -242,7 +242,7 @@ The fix was to separate write semantics from persistence:
 
 The lesson: persistent cloud volumes are not always clean POSIX build directories.
 
-## 3. One Embedding Column Was the Wrong Abstraction
+### 3. One Embedding Column Was the Wrong Abstraction
 
 My first catalog had a single `embedding` column.
 
@@ -287,8 +287,6 @@ The lesson: you cannot paper over an embedding-space mismatch with a shared sche
 
 ## Final Takeaway
 
-The hard part of batch inference is not only getting a GPU. It is keeping the GPU fed with warm model state.
+These bugs all pointed at the same engineering problem: the expensive stages were easy to run, but easy to trust incorrectly.
 
-The hard part of cataloging is not only writing rows. It is deciding which rows are trusted enough for downstream consumers.
-
-And the hard part of multimodal pipelines is not only supporting four media types. It is remembering that every shared abstraction has modality-specific edges.
+Ray needed warm model state. The catalog needed a strict input boundary. The schema needed to admit that text vectors and CLIP vectors are not the same object. Once those contracts became explicit, the pipeline became easier to reason about.

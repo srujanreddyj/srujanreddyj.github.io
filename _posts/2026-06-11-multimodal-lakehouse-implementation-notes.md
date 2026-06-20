@@ -8,9 +8,9 @@ tags: [markdown, multimodal, lakehouse, embeddings, lancedb, ray, modal, dedupli
 
 # Multimodal Lakehouse Implementation Notes
 
-In the first version of this project, I wrote about the gap between a notebook embedding workflow and a production-shaped multimodal data pipeline. These notes go one layer deeper: what I built, why I used four modalities, where the architecture came from, and how the deduplication and versioning pieces map to the patterns used in larger training data systems.
+In the first version of this project, I wrote about the gap between a notebook embedding workflow and a production-shaped multimodal data pipeline. These notes go one layer deeper into the storage and deduplication decisions: how raw media gets stable identity, how dataset versions avoid copying files, and how exact and semantic dedup fit into one pipeline.
 
-For the broader architecture and motivation, start with [Serverless Multimodal Data Lakehouse]({% post_url 2026-06-01-multimodal-embedding-pipeline-lancedb %}). This post is the implementation companion.
+For the broader architecture and motivation, start with [Serverless Multimodal Data Lakehouse]({% post_url 2026-06-01-multimodal-embedding-pipeline-lancedb %}). This post focuses on the implementation layer underneath that architecture.
 
 ## What I Built
 
@@ -21,7 +21,7 @@ The system ingests four modalities:
 - **Video:** FineVideo
 - **Audio:** LibriSpeech
 
-Those datasets flow through a 12-stage pipeline:
+Those datasets flow through the same 12-stage pipeline:
 
 ```text
 Source Connectors -> Content-Addressed Store -> Ray Preprocessing -> Quality/Dedup
@@ -29,7 +29,7 @@ Source Connectors -> Content-Addressed Store -> Ray Preprocessing -> Quality/Ded
 -> Training Loader -> Eval Feedback -> Precompute Decisions -> Provenance
 ```
 
-Each stage has one job and one trust contract with the next stage.
+For this post, the important stages are the ones that decide identity and reuse.
 
 The connector outputs a uniform schema. The content-addressed store saves blobs by SHA256. Ray actors embed batches with models loaded once. Quality gates write soft metadata instead of hard-deleting records. The catalog is a single LanceDB table across all modalities. A dataset version is a JSON manifest of content hashes, not a copied folder of terabytes.
 
@@ -68,7 +68,7 @@ I wanted to see what it actually took to build those pillars from scratch.
 
 ## From Whiteboard to Working Code
 
-It is easy to draw boxes on a whiteboard. The hard part is turning those boxes into contracts.
+It is easy to draw boxes on a whiteboard. The hard part is deciding what each stage is allowed to trust from the stage before it.
 
 The theoretical architecture became real only after I made a few implementation decisions:
 
@@ -120,7 +120,7 @@ The point is not that custom CAS is always better. The point is that immutable b
 
 ## Deduplication
 
-While working on this pipeline, I looked at deduplication strategies from modern LLM and multimodal training pipelines, (also read through the latest Microsoft's Phi-style) reports. The structural pattern is familiar: exact dedup first, then cheaper fuzzy methods, then embedding-based semantic dedup, with provenance kept throughout.
+While working on this pipeline, I compared the implementation with deduplication strategies used in recent LLM and multimodal training data systems, including Phi-style data reports. The structural pattern is familiar: exact dedup first, then cheaper near-duplicate passes, then embedding-based semantic dedup, with provenance kept throughout.
 
 Here is how those ideas map to this project:
 
@@ -131,8 +131,6 @@ Here is how those ideas map to this project:
 | Soft filtering with metadata | Quality gates record `quality_status` and `quality_reason` instead of deleting records |
 | Per-source licensing and provenance | License and source fields live in the catalog |
 | Source-specific heuristics | Text, image, video, and audio each have modality-specific quality checks |
-
-
 
 ## Per-Modality Deduplication Landscape
 
@@ -145,7 +143,7 @@ Different modalities need different deduplication tools. Exact hashing is univer
 | Semantic | Embedding clusters / SemDeDup | CLIP embeddings + clustering | CLIP on keyframes + pooling | Whisper transcription or spectral embeddings |
 | Structural | Boilerplate removal, suffix arrays | Corruption and resolution checks | Scene splitting before dedup | Silence and noise removal |
 
-I tried implementing :
+I implemented this subset:
 
 | Layer | Status |
 | --- | --- |
@@ -156,7 +154,7 @@ I tried implementing :
 
 Production pipelines usually run these layers in cost order. The cheapest pass removes the obvious duplicates first, so the expensive semantic pass sees fewer records.
 
-## This Pipeline Does Not Do
+## What This Pipeline Does Not Do Yet
 
 The project is intentionally smaller than a full industrial curation stack. Some production systems add:
 
@@ -230,8 +228,8 @@ My pipeline already has the first and third parts of this pattern: embeddings pl
 
 ## Final Takeaway
 
-The architecture is less about any single tool and more about the order of trust.
+The storage layer is what turns this from a pile of embeddings into a dataset system.
 
-Start with immutable blobs. Attach metadata instead of deleting records. Version datasets with manifests. Keep embeddings and provenance queryable. Run cheap dedup before expensive dedup. Treat every stage as a contract with the next one.
+Immutable blobs give each asset stable identity. Manifests make versions cheap. Soft metadata keeps filtering decisions auditable. Dedup runs in cost order, so expensive semantic search becomes one layer in a larger process instead of the whole design.
 
-That is the difference between an embedding demo and a multimodal training data system.
+The result is that a training job can ask for a named dataset version and trace which bytes, filters, embeddings, and provenance produced it.
