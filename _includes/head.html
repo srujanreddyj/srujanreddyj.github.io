@@ -4,6 +4,10 @@
 
 {% seo %}
 
+{% if page.noindex or page.hidden %}
+<meta name="robots" content="noindex,follow">
+{% endif %}
+
 {% feed_meta %}
 
 {% if jekyll.environment == 'production' and site.google_analytics %}
