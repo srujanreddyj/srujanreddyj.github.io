@@ -1,7 +1,6 @@
 ---
 layout: post
 toc: true
-hidden_home: true
 title: "Inside Nemotron 3 Super: The Data Engineering Behind a 25-Trillion-Token Model"
 categories: [learnings]
 tags: [markdown, data-engineering, llm-pretraining, nemotron, data-pipeline, synthetic-data, deduplication]
@@ -243,3 +242,4 @@ Training the model was the last step. Building a corpus worth training on was th
 - NVIDIA Developer Blog, *Building Nemotron-CC: A High-Quality Trillion-Token Dataset*
 - NVIDIA Docs, *Nemotron Data Preparation Module*
 - NVIDIA-NeMo/Nemotron GitHub repository
+- [Study Guide: The Nemotron 3 Super Data Engineering Pipeline](_posts/2026-07-04-nemotron-3-super-data-engineering-pipeline-study-guide.md)

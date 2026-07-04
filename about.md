@@ -6,7 +6,7 @@ permalink: /about/
 
 <section class="page-intro">
   <p class="section-kicker">Profile</p>
-  <p>I am Srujan Jabbireddy, a data infrastructure engineer focused on building reliable systems for AI and machine learning workflows. My work centers on turning raw, messy, high-volume data into validated, versioned, and model-ready datasets for training, evaluation, and production use.</p>
+  <p>I am Srujan, an engineer focused on building reliable systems for AI and machine learning workflows. My work centers on turning raw, messy, high-volume data into validated, versioned, and model-ready datasets for training, evaluation, and production use.</p>
 </section>
 
 ## What I Work On
