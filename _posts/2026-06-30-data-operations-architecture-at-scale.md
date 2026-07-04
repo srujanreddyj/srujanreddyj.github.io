@@ -59,7 +59,7 @@ The biggest mistake in thinking about ML data operations is drawing it as a stra
 
 Each numbered stage below is one section of this guide. Study them in order the first time; use them as a reference afterward.
 
-> 🧠 **Remember this line:** *Data operations is not a single pipeline. It is a closed loop of coordinated stages, each with different latency and correctness requirements, that must agree on what the data means.*
+> 🧠 **Takeaway** *Data operations is not a single pipeline. It is a closed loop of coordinated stages, each with different latency and correctness requirements, that must agree on what the data means.*
 
 ---
 
@@ -415,7 +415,80 @@ This is the stage that turns the pipeline into a cycle instead of a line.
 
 ---
 
-## 14. A Practical Reference Architecture
+## 14. Modality-Specific Variations Across the Cycle
+
+The 10-stage cycle in Sections 2–12 holds for every modality — you still collect, validate, label, enrich, transform, store, train, serve, monitor, and feed back. What changes almost completely by modality is **what each stage means technically**: what "cleaning" is, what "duplicate" means, what a quality score is built from, and what the unique safety/compliance risks are. This section is the modality-by-modality technical breakdown, followed by one comparison table.
+
+### 14a. Text (the baseline)
+
+Every generic tool named earlier in this guide (schema checks, hash-based dedup, quality classifiers) was built for text first — it's the cheapest modality to store, clean, and score.
+
+- **Cleaning:** HTML/boilerplate stripping, encoding normalization (UTF-8, Unicode fixes).
+- **Dedup:** exact hashing (SHA/MD5) plus **MinHash + Locality-Sensitive Hashing (LSH)** for near-duplicates at the shingle/n-gram level.
+- **Quality scoring:** perplexity, grammatical-quality classifiers, repetition and spam signals.
+- **Tokenization:** solved problem — BPE-style subword tokenizers.
+- **Cost profile:** lowest storage and compute cost per training example of any modality.
+
+### 14b. Images
+
+Almost every stage changes shape.
+
+- **Cleaning:** format/resolution normalization, color-space fixes, corrupt-file detection (truncated JPEGs, broken headers) — not encoding fixes.
+- **Dedup:** exact byte hashing fails immediately — a resized, cropped, or re-compressed copy of the same image has a completely different hash. Image pipelines use **perceptual hashing (pHash)** or **embedding-similarity dedup** (CLIP-style embeddings + approximate nearest-neighbor search) instead.
+- **Quality scoring:** aesthetic score, blur/exposure/resolution thresholds, watermark detection (a stock-photo watermark baked into millions of training images is a real, documented contamination failure).
+- **Safety filtering:** adds a category text mostly doesn't have — mandatory CSAM screening against known-hash databases (a legal requirement in most jurisdictions), plus NSFW and violence classifiers.
+- **"Tokenization":** not tokenization in the text sense — images are patchified (ViT-style fixed patches) or passed through a learned discrete codebook (VQ-VAE / VQ-GAN) to produce tokens.
+- **Synthetic data role:** mainly **recaptioning** — raw alt-text scraped from the web is frequently irrelevant or SEO-stuffed, so a vision-language model is run over the corpus to generate better captions. This is a different synthetic-data motive than text's "rephrase weak writing."
+
+### 14c. Audio
+
+- **Cleaning:** resampling to a standard sample rate, mono/stereo normalization, silence trimming, loudness normalization.
+- **Dedup:** acoustic fingerprinting (Shazam-style), not text or image hashing.
+- **Quality scoring:** signal-to-noise ratio, clipping detection, speech-quality metrics (e.g., DNSMOS-style scores) instead of perplexity.
+- **Safety/compliance:** adds **voice consent and likeness rights** — a person's voice carries more legal and ethical sensitivity than their written words, especially given voice-cloning risk.
+- **"Tokenization":** conversion to mel-spectrograms or discrete tokens via a neural audio codec (EnCodec, SoundStream-style) — a much heavier preprocessing step than text tokenization.
+- **Cost profile:** meaningfully higher storage/decode cost per hour than text, but still below video.
+
+### 14d. Video — the most expensive lane
+
+- **Cleaning:** codec/container normalization, frame-rate normalization, and critically, **frame sampling** — adjacent frames are nearly identical, so pipelines run shot/scene detection and keyframe extraction rather than using every frame.
+- **Dedup:** runs on embeddings of sampled frames or short clips; byte-level or single-frame hashing misses re-encoded or re-cropped copies.
+- **Quality scoring:** adds temporal dimensions on top of per-frame visual quality — camera shake, scene-cut frequency, audio-video sync quality.
+- **Annotation:** the most expensive per-item of any modality — temporal action labels, object tracking across frames, and speaker diarization all take far more annotator time than one image label or text span.
+- **Cost profile:** dominates every other consideration. Decoding video at scale is itself a compute bottleneck before modeling starts, which makes frame-sampling strategy as much a cost-control decision as a data-quality one.
+
+### 14e. Multimodal Pairing (image-text, video-text, audio-text)
+
+Paired data introduces a problem none of the single-modality pipelines have: **alignment quality between modalities, not just quality within one.** A perfectly clean image paired with an unrelated caption is worse than either being individually flawed, because the model learns a false association.
+
+This needs its own filtering stage, run in addition to (not instead of) each modality's own pipeline:
+- **Cross-modal relevance filtering** — commonly a CLIP-style similarity score between image and caption.
+- **Transcript-alignment filtering** — ASR word-error-rate used as a proxy for how well an audio track matches its transcript.
+- **Provenance requirement:** pairs need lineage on *both* sides — which image-quality pipeline and which text-quality pipeline each half passed through — since a pair can fail for either reason independently.
+
+### 14f. Comparison Table
+
+| Stage/Concern | Text | Image | Audio | Video |
+|---|---|---|---|---|
+| Dedup method | Hash / MinHash-LSH | Perceptual hash / embedding similarity | Acoustic fingerprinting | Frame/clip embedding similarity |
+| Quality signal | Perplexity, grammar | Aesthetic score, blur, resolution | SNR, clipping, speech quality | Camera shake, scene cuts, A/V sync |
+| Extra safety concern | PII, toxicity | CSAM, NSFW, watermarks | Voice consent/likeness | All of the above, plus per-frame |
+| "Tokenization" | BPE subwords | Patches / VQ codebook | Mel-spectrogram / neural codec | Sampled frames + patches |
+| Synthetic data role | Rephrase weak text | Recaption (VLM-generated captions) | TTS-generated pairs | VLM-generated descriptions/labels |
+| Relative storage/compute cost | Lowest | Medium | Medium–high | Highest |
+| Unique failure mode | Boilerplate dominance | Byte-dedup misses near-dupes | Consent/likeness issues | Redundant-frame waste |
+
+### 14g. The Cross-Cutting Shift: Quality Checks Become Someone Else's Model's Job
+
+The pattern that cuts across every non-text modality: **the further you get from text, the more "cleaning" and "quality" are delegated to an auxiliary model** — a CLIP score, a VLM caption, a codec, an ASR transcript — rather than a hand-written heuristic.
+
+That shifts the engineering burden from *writing filters* to **validating and versioning the auxiliary models doing the filtering**. A stale CLIP checkpoint or a degraded captioning model silently lowers corpus quality in a way that's much harder to detect than a broken regex — it doesn't throw an error, it just quietly passes worse data through. This means Rule 5 from Section 7 ("version the view, not just the data") gets an extra item for multimodal pipelines: **the version of every auxiliary model used for cleaning, scoring, or captioning must be tracked as part of the data version**, exactly like a synthetic-data generator version.
+
+> 🧠 **Remember this line:** *Multimodal doesn't add a new stage to the cycle — it changes what every existing stage is built out of, and it adds one new stage (cross-modal alignment) that single-modality pipelines never need.*
+
+---
+
+## 15. A Practical Reference Architecture
 
 The smallest version that still preserves the right shape end-to-end:
 
@@ -471,7 +544,7 @@ prediction logs           | fast features      |
 
 ---
 
-## 15. Common Failure Modes (Full List — Memorize These)
+## 16. Common Failure Modes (Full List — Memorize These)
 
 Every one of these traces back to the same root cause: **a stage bypassed the shared contract with the rest of the cycle.**
 
@@ -490,10 +563,13 @@ Every one of these traces back to the same root cause: **a stage bypassed the sh
 | Naive train/test split | Same entity or overlapping time window leaks into both train and test, inflating offline metrics |
 | No deletion path | Privacy/retention requirements ignored until a compliance request arrives, and data can't be traced across every table/cache/model it touched |
 | Monitoring without feedback wiring | Drift gets detected but there's no path for it to trigger relabeling, resampling, or synthetic generation |
+| Byte-level dedup on non-text media | A resized image or re-encoded audio/video clip passes exact-hash dedup untouched, so the "duplicate" trains the model multiple times anyway |
+| Unversioned auxiliary model | A captioning/CLIP/ASR model used for cleaning gets silently upgraded or degrades, and corpus quality shifts with no record of why |
+| Untracked cross-modal misalignment | Image-caption or audio-transcript pairs are individually clean but mismatched, teaching the model false associations |
 
 ---
 
-## 16. The Interview-Ready Answer
+## 17. The Interview-Ready Answer
 
 **Short version (memorize this):**
 > "I think of ML data operations as a closed loop, not a pipeline: data is collected through batch and streaming lanes, validated at each lane's own quality gate, labeled or synthetically augmented to fill gaps, merged into one governed view keyed by event time and shared feature definitions, versioned along with its transformation and generation code, used to train and serve consistently, and monitored in production — with drift, low-confidence predictions, and prediction logs feeding back into collection and labeling so the loop closes. The lanes can use different engines, but they all answer to the same contract."
@@ -509,7 +585,7 @@ Every one of these traces back to the same root cause: **a stage bypassed the sh
 
 ---
 
-## 17. Glossary
+## 18. Glossary
 
 | Term | Definition |
 |---|---|
@@ -529,10 +605,18 @@ Every one of these traces back to the same root cause: **a stage bypassed the sh
 | **Model collapse** | Progressive quality/diversity loss from repeatedly training a model on its own generated output |
 | **Data drift** | A change in the statistical distribution of input data compared to what a model was trained on |
 | **Point-in-time correctness** | The property that a training example only uses information that would have actually been available at that historical moment |
+| **Perceptual hash (pHash)** | A hash designed so visually similar images produce similar hash values, unlike exact byte hashing |
+| **MinHash / LSH** | A technique (MinHash) plus an indexing method (Locality-Sensitive Hashing) for finding near-duplicate items cheaply at scale |
+| **CLIP score** | A similarity score between an image and text caption from a joint vision-language embedding model, used to filter mismatched pairs |
+| **VQ-VAE / VQ-GAN** | Models that convert images into discrete tokens via a learned codebook, the image analog of text tokenization |
+| **Neural audio codec** | A model (e.g., EnCodec, SoundStream) that converts raw audio into discrete tokens for training |
+| **Frame sampling** | Selecting a representative subset of a video's frames (via shot/scene detection) instead of using every frame |
+| **Cross-modal alignment** | The correctness of the pairing between two modalities (e.g., does this caption actually describe this image) |
+| **Recaptioning** | Regenerating captions for an image/video corpus with a vision-language model when the original scraped text is low quality |
 
 ---
 
-## 18. Self-Check Questions
+## 19. Self-Check Questions
 
 Try answering from memory before checking the sections above.
 
@@ -547,10 +631,13 @@ Try answering from memory before checking the sections above.
 9. Why is monitoring "incomplete" if it doesn't feed back into labeling or collection?
 10. Describe the failure mode "auto-label bias loop" — what breaks and why?
 11. In the growth order for building this system from scratch, what should never be treated as optional, even in the smallest version?
+12. Why does exact-hash deduplication fail for images and audio, and what replaces it for each?
+13. What's the difference between recaptioning and text's "recovery rephrasing" as synthetic-data techniques?
+14. Why does video annotation cost more per item than any other modality?
+15. What is cross-modal alignment, and why is it a stage single-modality pipelines never need?
+16. Why does adding non-text modalities change what needs to be tracked in a data version (Rule 5 / Section 7)?
 
 ---
 
 ### One-line takeaway
 **Data operations for ML isn't a pipeline from raw data to a trained model — it's a closed loop where collection, labeling, augmentation, storage, training, serving, and monitoring all answer to one shared contract, and production feeds itself back into the beginning.**
-
----
