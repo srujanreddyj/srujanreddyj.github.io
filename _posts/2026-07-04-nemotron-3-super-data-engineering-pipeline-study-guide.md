@@ -2,6 +2,7 @@
 layout: post
 toc: true
 hidden_home: true
+study_guide: true
 title: "Study Guide: The Nemotron 3 Super Data Engineering Pipeline"
 categories: [learnings]
 tags: [data-engineering, llm-pretraining, nemotron, data-pipeline, study-guide]

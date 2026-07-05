@@ -2,12 +2,13 @@
 layout: post
 toc: true
 hidden_home: true
+study_guide: true
 title: "Study Guide: Data Operations Architecture at Scale"
 categories: [learnings]
 tags: [markdown, data-engineering, mlops, data-operations, multimodal, governance, monitoring, study-guide]
 ---
 
-# Data Operations Architecture at Scale
+# Study Guide: Data Operations Architecture at Scale
 
 Production ML data operations is a collection of connected systems: ingestion, annotation, synthetic data, multimodal storage, enrichment, quality monitoring, agentic remediation, self-service tooling, scale patterns, and governance. This post walks through each component as an architecture decision: what the component does, why the design matters, and what tradeoffs come with it.
 
