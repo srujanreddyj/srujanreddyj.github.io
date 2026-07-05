@@ -242,4 +242,4 @@ Training the model was the last step. Building a corpus worth training on was th
 - NVIDIA Developer Blog, *Building Nemotron-CC: A High-Quality Trillion-Token Dataset*
 - NVIDIA Docs, *Nemotron Data Preparation Module*
 - NVIDIA-NeMo/Nemotron GitHub repository
-- [Study Guide: The Nemotron 3 Super Data Engineering Pipeline](_posts/2026-07-04-nemotron-3-super-data-engineering-pipeline-study-guide.md)
+- [Study Guide: The Nemotron 3 Super Data Engineering Pipeline](/learnings/2026/07/04/nemotron-3-super-data-engineering-pipeline-study-guide.html)
