@@ -826,7 +826,7 @@ html[data-theme="dark"] .hero-figure img {
 
 .case-card-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -892,6 +892,60 @@ html[data-theme="dark"] .hero-figure img {
   font-family: var(--site-mono);
   font-size: 0.78rem;
   font-weight: 800;
+}
+
+.case-card-personal,
+.personal-case-study .architecture-panel {
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--site-link) 11%, transparent), transparent 22rem),
+    var(--site-surface);
+}
+
+.case-project-links,
+.case-reading-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.case-project-links a,
+.case-reading-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--site-border);
+  border-radius: var(--site-radius);
+  color: var(--site-text) !important;
+  background: color-mix(in srgb, var(--site-surface) 74%, transparent);
+  font-family: var(--site-mono);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.case-project-links a:hover,
+.case-reading-list a:hover {
+  border-color: var(--site-border-strong);
+  text-decoration: none;
+}
+
+.case-reading-list {
+  align-items: center;
+  padding: 20px;
+  border: 1px solid var(--site-border);
+  border-top: 0;
+  border-radius: 0 0 var(--site-radius) var(--site-radius);
+}
+
+.case-reading-list > span {
+  margin-right: auto;
+  color: var(--site-muted);
+  font-family: var(--site-mono);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .case-study {

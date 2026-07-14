@@ -9,7 +9,7 @@ body_class: case-studies-page
 <section class="case-hero" aria-labelledby="case-hero-title">
   <p class="section-kicker">Senior data engineer · selected work</p>
   <h2 id="case-hero-title">I build data systems that stay correct while they get faster.</h2>
-  <p class="case-hero-lede">Three production case studies across change data capture, lakehouse architecture, event streaming, and query processing. Start with the outcomes; open the technical notes for the design decisions and failure modes.</p>
+  <p class="case-hero-lede">Production case studies across change data capture, lakehouse architecture, event streaming, and query processing—plus a personal multimodal systems project built for the joy of learning how the pieces really work. Start with the outcomes; open the technical notes for the design decisions and failure modes.</p>
   <div class="case-hero-actions">
     <a class="button button-primary" href="#case-studies">View case studies</a>
     <a class="button button-secondary" href="mailto:{{ site.email }}">Contact me</a>
@@ -53,6 +53,14 @@ body_class: case-studies-page
       <h3>Query-path redesign</h3>
       <p>Matched physical processing to real investigation patterns and replaced full refreshes with bounded incremental work.</p>
       <span class="case-card-result">~5 days to ~1 day</span>
+    </a>
+
+    <a class="case-card case-card-personal" href="#multimodal-lakehouse">
+      <span class="case-number">04</span>
+      <span class="case-card-label">Personal project · ML data infrastructure</span>
+      <h3>Multimodal lakehouse</h3>
+      <p>Built a 12-stage pipeline that turns text, images, video, and audio into traceable, deduplicated, training-ready features.</p>
+      <span class="case-card-result">Ray · Modal · LanceDB · WebDataset</span>
     </a>
   </div>
 </section>
@@ -228,6 +236,88 @@ body_class: case-studies-page
       <h3>Trade-off accepted</h3>
       <p>I stopped at a one-day batch SLA because the consumer workflow was daily. Streaming would have increased state, late-event, and operational complexity for freshness no one could use. The goal was the fastest trustworthy answer inside the decision window, not the lowest possible latency.</p>
     </section>
+  </div>
+</article>
+
+<article class="case-study personal-case-study" id="multimodal-lakehouse">
+  <header class="case-study-header">
+    <div>
+      <p class="case-number">04 · Personal project</p>
+      <h2>Building a lakehouse for data a model can trust</h2>
+    </div>
+    <div>
+      <p class="case-study-summary">I built this project to learn what sits between “embed some files” and reusable multimodal training infrastructure. One pipeline ingests text, images, video, and audio; preserves stable identity and provenance; runs distributed preprocessing and GPU inference; then produces both searchable features and streaming-friendly training shards.</p>
+      <div class="case-project-links">
+        <a href="{% post_url 2026-06-01-multimodal-embedding-pipeline-lancedb %}">Read the overview</a>
+        <a href="https://github.com/srujanreddyj/distributed-embedding-search-lakehouse">View source</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="architecture-panel">
+    <div class="architecture-caption">
+      <span>12-stage system, compressed</span>
+      <p>Durable identity, warm GPU workers, a governed catalog, and a separate layout for training throughput.</p>
+    </div>
+    <svg class="architecture-diagram" viewBox="0 0 960 286" role="img" aria-labelledby="multimodal-diagram-title multimodal-diagram-desc">
+      <title id="multimodal-diagram-title">Multimodal lakehouse architecture</title>
+      <desc id="multimodal-diagram-desc">Text, image, video, and audio connectors write immutable content-addressed assets. Ray actors perform quality checks, deduplication, and embedding on Modal. Approved records enter a LanceDB catalog, version manifests select stable datasets, and WebDataset shards feed training loaders.</desc>
+      <defs>
+        <marker id="arrow-multimodal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" /></marker>
+      </defs>
+      <g class="diagram-connector" marker-end="url(#arrow-multimodal)">
+        <path d="M174 116 H212"/><path d="M382 116 H420"/><path d="M590 116 H628"/><path d="M798 116 H836"/>
+      </g>
+      <g class="diagram-node diagram-node-compact">
+        <rect x="18" y="58" width="156" height="116" rx="12"/><text x="96" y="92" text-anchor="middle" class="diagram-label">4 modalities</text><text x="96" y="120" text-anchor="middle" class="diagram-detail">text · image</text><text x="96" y="143" text-anchor="middle" class="diagram-detail">video · audio</text>
+        <rect x="212" y="58" width="170" height="116" rx="12"/><text x="297" y="92" text-anchor="middle" class="diagram-label">CAS + quality</text><text x="297" y="120" text-anchor="middle" class="diagram-detail">SHA256 identity</text><text x="297" y="143" text-anchor="middle" class="diagram-detail">soft filtering</text>
+        <rect x="420" y="58" width="170" height="116" rx="12"/><text x="505" y="92" text-anchor="middle" class="diagram-label">Ray on Modal</text><text x="505" y="120" text-anchor="middle" class="diagram-detail">warm GPU actors</text><text x="505" y="143" text-anchor="middle" class="diagram-detail">embeddings + FAISS</text>
+        <rect x="628" y="58" width="170" height="116" rx="12"/><text x="713" y="92" text-anchor="middle" class="diagram-label">LanceDB catalog</text><text x="713" y="120" text-anchor="middle" class="diagram-detail">vectors + metadata</text><text x="713" y="143" text-anchor="middle" class="diagram-detail">trust boundary</text>
+        <rect x="836" y="58" width="106" height="116" rx="12"/><text x="889" y="92" text-anchor="middle" class="diagram-label">Training</text><text x="889" y="120" text-anchor="middle" class="diagram-detail">manifests</text><text x="889" y="143" text-anchor="middle" class="diagram-detail">shards</text>
+      </g>
+      <g class="diagram-note"><text x="480" y="230" text-anchor="middle">Search reads the catalog · training streams materialized WebDataset shards</text><text x="480" y="253" text-anchor="middle">Every output retains content hash, model version, quality decision, and provenance</text></g>
+    </svg>
+  </div>
+
+  <div class="case-results" aria-label="Multimodal project scope">
+    <div><strong>4</strong><span>media modalities</span></div>
+    <div><strong>12</strong><span>pipeline stages</span></div>
+    <div><strong>~10K</strong><span>records at demo scale</span></div>
+    <div><strong>~$0.15</strong><span>observed demo GPU cost</span></div>
+  </div>
+
+  <div class="case-detail-grid">
+    <section>
+      <h3>Identity before features</h3>
+      <p>Raw assets are immutable blobs addressed by SHA256. Exact duplicates across sources are stored once, and a dataset version is a JSON manifest of content hashes rather than another copied media folder. Branching a training mix adds metadata, not terabytes of duplicated assets.</p>
+    </section>
+    <section>
+      <h3>Keeping expensive state warm</h3>
+      <p>Ray Data uses stateful actors so each worker loads its embedding model once and serves many batches. CPU stages decode and validate media; GPU actors focus on inference. Batch size, actor count, and memory limits are explicit controls rather than hidden magic.</p>
+    </section>
+    <section>
+      <h3>The catalog as a trust boundary</h3>
+      <p>My first design let raw manifests reach the LanceDB catalog before quality gates. That meant corrupt or rejected samples could look valid downstream. I changed the contract so only approved filtered artifacts enter the catalog, and every search, version, shard, training job, and evaluation reads from that governed boundary.</p>
+    </section>
+    <section>
+      <h3>Search and training need different layouts</h3>
+      <p>LanceDB keeps embeddings and structured metadata together for filtering, similarity search, and provenance. Training needs fewer large sequential reads, so frozen manifests materialize into WebDataset tar shards. Shards optimize delivery; the catalog and manifest remain the source of truth.</p>
+    </section>
+    <section>
+      <h3>Deduplication in cost order</h3>
+      <p>SHA256 removes exact duplicates before inference. FAISS then finds semantic neighbors across the shared embedding layer, while quality decisions remain soft metadata instead of destructive deletes. Near-exact perceptual and fingerprint-based passes are documented next steps, not claimed as complete.</p>
+    </section>
+    <section class="case-tradeoff">
+      <h3>Demo scale, production-shaped</h3>
+      <p>The measured run is intentionally small: roughly 10,000 records on ephemeral L4 GPUs for about $0.15. It does not prove billion-item throughput. What it validates is the system shape—stable identity, explicit stage contracts, reusable model actors, auditable curation, versioned datasets, and separate serving layouts.</p>
+    </section>
+  </div>
+
+  <div class="case-reading-list" aria-label="Multimodal project technical notes">
+    <span>Technical series</span>
+    <a href="{% post_url 2026-06-11-multimodal-lakehouse-implementation-notes %}">Storage, versioning, and dedup</a>
+    <a href="{% post_url 2026-06-12-ray-actors-catalog-trust-boundary %}">Ray actors and trust boundaries</a>
+    <a href="{% post_url 2026-06-18-training-ready-multimodal-data-shards-loaders %}">Training shards and loaders</a>
   </div>
 </article>
 
