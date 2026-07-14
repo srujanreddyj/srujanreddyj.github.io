@@ -2,7 +2,7 @@
 layout: page
 title: Selected data engineering work
 description: Case studies in CDC, Apache Iceberg, Amazon Kinesis, and query optimization by Srujan Jabbireddy.
-permalink: /portfolio/
+permalink: /case-studies/
 body_class: case-studies-page
 ---
 
