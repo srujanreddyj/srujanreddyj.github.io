@@ -11,7 +11,8 @@ permalink: /writing/
 
 <div class="portfolio-list">
   {% assign date_format = site.date_format | default: "%b %-d, %Y" %}
-  {% for post in site.posts %}
+  {% assign essays = site.posts | where_exp: "post", "post.study_guide != true" %}
+  {% for post in essays %}
     <article class="portfolio-item">
       <div class="portfolio-item-meta">
         <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: date_format }}</time>

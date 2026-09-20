@@ -1,12 +1,10 @@
-- title: About
-  url: /about/
-- title: Case Studies
-  url: /case-studies/
 - title: Writing
   url: /writing/
+- title: Case Studies
+  url: /portfolio/
 - title: Guides
-  url: /other-guides/
-- title: Topics
-  url: /categories/
-- title: Archive
-  url: /years/
+  url: /guides/
+- title: References
+  url: /references/
+- title: About
+  url: /about/
