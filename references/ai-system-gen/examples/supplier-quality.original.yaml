@@ -1,0 +1,92 @@
+# User-supplied example. Paste escapes and whitespace have been normalized.
+# Illustrative only: access_control is custom pseudocode, not Cube syntax.
+# See ../semantic-models-and-agent-queries.md before adapting this model.
+# Model name: supplier_quality_and_risk
+# Purpose: Governs quality metrics, defect rates, and delivery risks for parts.
+
+cubes:
+  - name: supplier_quality
+    # 1. PHYSICAL BINDING
+    # The actual table, view, or Iceberg table in the database
+    sql_table: analytics.tqp_trendline_view
+    description: "Tracks daily part inspections, defect quantities, and supplier risk scores."
+
+    # 2. JOINS / ENTITY RELATIONSHIPS
+    # Tells the engine how to safely join other models without Cartesian explosions
+    joins:
+      - name: suppliers
+        sql: "{CUBE}.supplier_id = {suppliers}.id"
+        relationship: many_to_one
+      - name: program_bom
+        sql: "{CUBE}.part_number = {program_bom}.part_number"
+        relationship: many_to_one
+
+    # 3. DIMENSIONS (Attributes to GROUP BY or FILTER BY)
+    dimensions:
+      - name: inspection_id
+        sql: inspection_id
+        type: string
+        primary_key: true
+        description: "Unique identifier for the inspection batch."
+      - name: part_number
+        sql: part_number
+        type: string
+        description: "Manufactured component part number (e.g., PN-88301)."
+      - name: supplier_id
+        sql: supplier_id
+        type: string
+        description: "Unique enterprise vendor ID."
+      - name: plant_location
+        sql: plant_location
+        type: string
+        description: "Factory site where inspection took place (e.g., Fremont, Austin, Berlin)."
+      - name: criticality_tier
+        sql: criticality_tier
+        type: string
+        description: "Supplier importance level: T1 (critical), T2 (major), T3 (standard)."
+      - name: inspection_date
+        sql: inspection_timestamp
+        type: time
+        description: "Timestamp when the quality check was logged."
+      - name: is_critical_part
+        # Derived dimension computed at row level
+        sql: "CASE WHEN {criticality_tier} = 'T1' THEN true ELSE false END"
+        type: boolean
+        description: "Flags whether the part is Tier-1 mission critical."
+
+    # 4. MEASURES (Aggregations: SUM, COUNT, AVG, RATIOS)
+    # The LLM never writes the formula. It only references the measure name.
+    measures:
+      - name: total_inspections
+        type: count
+        description: "Total number of quality inspection events conducted."
+      - name: total_parts_inspected
+        sql: inspected_quantity
+        type: sum
+        description: "Total count of individual hardware parts examined."
+      - name: total_defects
+        sql: defect_quantity
+        type: sum
+        description: "Total count of non-conforming or rejected parts."
+      - name: defect_ppm
+        # Calculated metric: Parts Per Million defect rate
+        sql: "ROUND((1000000.0 * {total_defects}) / NULLIF({total_parts_inspected}, 0), 2)"
+        type: number
+        description: "Defect rate expressed in Parts Per Million (PPM)."
+      - name: avg_lead_time_days
+        sql: delivery_lead_time_days
+        type: avg
+        description: "Average days between purchase order submission and factory dock arrival."
+
+    # 5. ACCESS CONTROL POLICIES (Row-Level Security)
+    # Automatically injected by the compiler based on user claims
+    access_control:
+      rules:
+        - name: restrict_by_user_plant
+          description: "Engineers can only query data for plants they are assigned to."
+          # If user claim has 'all_plants', no filter is applied
+          # Otherwise, automatically injects: WHERE plant_location IN (:user.assigned_plants)
+          sql: >
+            {% if user.role != 'Executive' %}
+              {CUBE}.plant_location IN ({{ user.assigned_plants | join(', ') }})
+            {% endif %}
