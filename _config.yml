@@ -49,6 +49,9 @@ exclude:
   - scripts/
   - README.md
   - jekyll-theme-hamilton.gemspec
+  # Private shelf: keep in git, do not publish to Pages.
+  - references/
+  - references.md
 
 titles_from_headings:
   enabled:     true
