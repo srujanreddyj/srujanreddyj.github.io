@@ -74,5 +74,5 @@ body_class: resume-page
     <p class="section-kicker">Evidence, not keyword lists</p>
     <h2>See the architecture, decisions, and results.</h2>
   </div>
-  <a class="button button-primary" href="{{ '/portfolio/' | relative_url }}">Explore selected work</a>
+  <a class="button button-primary" href="{{ '/case-studies/' | relative_url }}">Explore selected work</a>
 </section>

@@ -47,8 +47,10 @@ const base = process.env.SITE_URL || 'http://127.0.0.1:4173';
     await page.screenshot({ path: '/private/tmp/site-writing-desktop.png', fullPage: true });
     for (const width of [320, 390, 768, 1440]) {
       await page.setViewportSize({ width, height: 844 });
-      for (const path of ['/', '/writing/', '/categories/', '/topics/data-platforms/', '/guides/', '/portfolio/']) {
+      for (const path of ['/', '/writing/', '/categories/', '/topics/data-platforms/', '/guides/', '/case-studies/']) {
         await page.goto(base + path);
+        await page.evaluate(() => document.fonts.ready);
+        if (path === "/case-studies/") assert.equal(await page.locator("#case-index-title").textContent(), "The short version");
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, `overflow at ${width}: ${path}`);
       }
     }

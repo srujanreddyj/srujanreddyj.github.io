@@ -23,7 +23,7 @@ layout: default
         <div class="card-overline"><span>The full library</span><span class="card-count">{{ public_posts.size }}</span></div>
         <h3>Writing</h3><p>Technical deep dives, implementation lessons, and decisions made along the way.</p><span class="card-action">Browse writing <span aria-hidden="true">→</span></span>
       </a>
-      <a class="discovery-card" href="{{ '/portfolio/' | relative_url }}">
+      <a class="discovery-card" href="{{ '/case-studies/' | relative_url }}">
         <div class="card-overline"><span>Selected work</span><span aria-hidden="true">↗</span></div>
         <h3>Case studies</h3><p>Production data platforms, measured outcomes, and the architecture behind them.</p><span class="card-action">Explore the work <span aria-hidden="true">→</span></span>
       </a>
@@ -54,5 +54,5 @@ layout: default
     <div class="section-heading"><h2 id="recent-title">Recently published</h2><a href="{{ '/years/' | relative_url }}">Full archive <span aria-hidden="true">→</span></a></div>
     <div class="reading-list">{% for post in writing limit:5 %}{% include content-row.html post=post compact=true %}{% endfor %}</div>
   </section>
-  <section class="work-callout"><div><p class="eyebrow">From the field</p><h2>What changes when a system<br>meets production?</h2><p>Case studies in CDC, lakehouse design, event ingestion, and query performance.</p></div><a href="{{ '/portfolio/' | relative_url }}">Read the case studies <span aria-hidden="true">→</span></a></section>
+  <section class="work-callout"><div><p class="eyebrow">From the field</p><h2>What changes when a system<br>meets production?</h2><p>Case studies in CDC, lakehouse design, event ingestion, and query performance.</p></div><a href="{{ '/case-studies/' | relative_url }}">Read the case studies <span aria-hidden="true">→</span></a></section>
 </div>
