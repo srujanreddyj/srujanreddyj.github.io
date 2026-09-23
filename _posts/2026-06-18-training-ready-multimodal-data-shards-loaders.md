@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["ai-ml-systems", "data-platforms"]
+summary: "Turning immutable dataset manifests into WebDataset shards and efficient training loaders."
+featured: false
 layout: post
 toc: true
 title: "Training-Ready Multimodal Data: Shards and Loaders"

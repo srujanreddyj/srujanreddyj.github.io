@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["data-platforms", "engineering-practice"]
+summary: "Precomputation, provenance, and observability turn a search demo into dependable data infrastructure."
+featured: false
 layout: post
 toc: true
 title: "From Search Demo to Data Infrastructure"

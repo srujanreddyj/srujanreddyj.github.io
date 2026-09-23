@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["engineering-practice"]
+summary: "Explaining a multimodal system through its constraints, design choices, and failure modes."
+featured: false
 layout: post
 toc: true
 title: "Explaining the Multimodal Lakehouse in Interviews"

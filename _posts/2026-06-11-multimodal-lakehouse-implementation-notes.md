@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["databases-querying", "data-platforms"]
+summary: "Content-addressed storage, dataset versioning, and deduplication in a multimodal lakehouse."
+featured: false
 layout: post
 toc: true
 title: "Multimodal Lakehouse Implementation Notes"

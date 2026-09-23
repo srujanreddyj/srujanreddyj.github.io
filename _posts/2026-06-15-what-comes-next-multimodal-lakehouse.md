@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["ai-ml-systems", "data-platforms"]
+summary: "The next design questions for a multimodal lakehouse: quality, deduplication, and evaluation."
+featured: false
 layout: post
 toc: true
 math: true

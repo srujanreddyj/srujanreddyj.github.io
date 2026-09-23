@@ -1,8 +1,12 @@
 ---
+visibility: public
+published: true
+content_type: guide
+topics: ["data-platforms", "engineering-practice"]
+summary: "The core concepts and tradeoffs used in data-platform architecture interviews."
+featured: false
 layout: post
 toc: true
-hidden_home: true
-study_guide: true
 title: "Data System Design Interview Glossary"
 categories: [learnings]
 tags: [data-engineering, system-design, interview-prep, glossary, study-guide]

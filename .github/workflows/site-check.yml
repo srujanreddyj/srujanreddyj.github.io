@@ -1,0 +1,26 @@
+name: Check site and reader access
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.8'
+          bundler-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: deployment/readers/package-lock.json
+      - run: ruby tests/content_policy.rb
+      - run: bundle exec ruby tests/private_resources.rb
+      - run: ./scripts/build
+      - run: bundle exec ruby scripts/check_site
+      - run: npm ci --ignore-scripts --prefix deployment/readers
+      - run: npm test --prefix deployment/readers

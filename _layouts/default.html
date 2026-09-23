@@ -14,7 +14,8 @@
         {% include header.html %}
       </header>
       
-      <div class="site-body wrapper">
+      <div class="site-body wrapper{% unless page.layout == 'post' and page.toc %} full-width{% endunless %}">
+        {% if page.layout == "post" and page.toc %}
         <aside class="site-sidebar" id="site-sidebar">
           {% if page.toc %}
             {% include sidebar-toc.html %}
@@ -22,6 +23,7 @@
             {% include sidebar.html %}
           {% endif %}
         </aside>
+        {% endif %}
         <main class="site-main" id="site-main" aria-label="Content">
           {{ content }}
           <footer class="site-footer">

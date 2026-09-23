@@ -25,15 +25,18 @@
 
 <script>
   (function () {
-    var storedTheme = localStorage.getItem("theme");
+    var storedTheme;
+    try { storedTheme = localStorage.getItem("theme"); } catch (_) {}
     var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    document.documentElement.dataset.theme = storedTheme || (prefersDark ? "dark" : "light");
+    document.documentElement.dataset.theme = (storedTheme === "light" || storedTheme === "dark" ? storedTheme : null) || (prefersDark ? "dark" : "light");
   })();
 </script>
 
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
 <link rel="stylesheet" href="{{ '/assets/css/skin.css' | relative_url }}">
 <link rel="stylesheet" href="{{ '/assets/css/pro.css' | relative_url }}">
+
+<link rel="stylesheet" href="{{ '/assets/css/discovery.css' | relative_url }}">
 
 <script async src="https://use.fontawesome.com/releases/v5.0.12/js/all.js"></script>
 

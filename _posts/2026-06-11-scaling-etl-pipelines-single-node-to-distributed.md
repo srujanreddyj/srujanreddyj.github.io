@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["distributed-systems", "data-platforms"]
+summary: "Moving from single-machine ETL to distributed pipelines without losing correctness or control."
+featured: false
 layout: post
 toc: true
 title: "Scaling ETL Pipelines: From One Machine to Distributed Systems"

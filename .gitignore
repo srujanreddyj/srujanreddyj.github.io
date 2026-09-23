@@ -7,3 +7,14 @@ _site
 .jekyll-metadata
 vendor
 _notebooks/.ipynb_checkpoints
+
+# Private deployment material stays outside the public repository.
+node_modules/
+.deployment-local/
+.dev.vars
+deployment/readers/wrangler.jsonc
+
+# Restricted content lives in the separate private library.
+/references/
+/references.md
+/presentations/

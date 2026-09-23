@@ -1,0 +1,21 @@
+{
+  "name": "systems-in-practice-readers",
+  "main": "worker.js",
+  "compatibility_date": "2026-09-22",
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./_site",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "vars": {
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUD": "",
+    "READER_HOSTNAME": ""
+  }
+  // Add a verified custom-domain route only after creating its Access application.
+  // Set APPROVED_EMAILS as a Worker secret containing a JSON array of emails.
+}

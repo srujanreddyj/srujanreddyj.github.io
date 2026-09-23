@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["ai-ml-systems"]
+summary: "Using evaluation feedback to decide whether a new dataset version deserves promotion."
+featured: false
 layout: post
 toc: true
 title: "Eval Feedback Loops for Multimodal Dataset Versions"

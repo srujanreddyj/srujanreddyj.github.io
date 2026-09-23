@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["ai-ml-systems", "databases-querying"]
+summary: "Building a product-quality feature store, from raw reviews to serving and drift monitoring."
+featured: false
 layout: post
 toc: true
 title: "Building a Multimodal Feature Store for Product Quality Risk: A Data-First Journey"

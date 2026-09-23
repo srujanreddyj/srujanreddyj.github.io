@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["data-platforms", "ai-ml-systems"]
+summary: "A 12-stage pipeline for turning text, images, video, and audio into traceable training data."
+featured: true
 layout: post
 toc: true
 title: "Serverless Multimodal Data Lakehouse"

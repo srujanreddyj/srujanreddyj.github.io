@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["ai-ml-systems", "data-platforms"]
+summary: "Designing the ingestion, serving, and monitoring systems behind production feature stores."
+featured: false
 layout: post
 toc: true
 title: "Machine Learning System Design: A Comprehensive Guide to Data-Centric Feature Stores"

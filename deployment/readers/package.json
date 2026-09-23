@@ -1,0 +1,7 @@
+{
+  "name": "systems-in-practice-readers",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test worker.test.js" },
+  "dependencies": { "jose": "6.1.3" }
+}

@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["distributed-systems", "databases-querying"]
+summary: "Ray actors, GPU execution, and the catalog boundary in a distributed multimodal pipeline."
+featured: false
 layout: post
 toc: true
 title: "Ray Actors, Catalog Trust Boundaries, and Pipeline Battle Scars"

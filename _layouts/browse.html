@@ -1,0 +1,22 @@
+---
+layout: default
+---
+{% include public-posts.html %}
+<div class="browse-page" data-browser data-fixed-topic="{{ page.topic | escape }}" data-fixed-kind="{{ page.content_type_filter | escape }}">
+  <header class="browse-heading"><p class="eyebrow">Systems in Practice · Library</p><h1>{{ page.title | escape }}</h1><p>{{ page.description | escape }}</p></header>
+  <nav class="topic-links browse-topics" aria-label="Topic navigation"><a href="{{ '/writing/' | relative_url }}">All writing</a>{% for topic in site.data.topics %}<a href="{{ '/topics/' | append: topic.id | append: '/' | relative_url }}" {% if page.topic == topic.id %}aria-current="page"{% endif %}>{{ topic.title }}</a>{% endfor %}</nav>
+  <form class="browse-controls" hidden role="search">
+    <label class="search-field">Search the library<input type="search" name="q" placeholder="Search titles and summaries…" autocomplete="off"></label>
+    {% unless page.topic %}<label>Topic<select name="topic" aria-label="Topic"><option value="">All topics</option>{% for topic in site.data.topics %}<option value="{{ topic.id }}">{{ topic.title }}</option>{% endfor %}</select></label>{% endunless %}
+    {% unless page.content_type_filter %}<label>Format<select name="type" aria-label="Format"><option value="">All formats</option><option value="article">Articles</option><option value="note">Notes</option><option value="guide">Guides</option></select></label>{% endunless %}
+    <button type="reset">Clear filters</button>
+  </form>
+  {% assign entries = public_posts %}
+  {% if page.topic %}{% assign entries = entries | where_exp: 'post', 'post.topics contains page.topic' %}{% endif %}
+  {% if page.content_type_filter %}{% assign entries = entries | where: 'content_type', page.content_type_filter %}{% endif %}
+  <p class="result-count" aria-live="polite" aria-atomic="true" data-results>{{ entries.size }} items · newest first</p>
+  <div class="reading-list">{% for post in entries %}{% include content-row.html post=post %}{% endfor %}</div>
+  <p class="empty-results" hidden data-empty>No writing matches these filters. Try another term or clear the filters.</p>
+  <noscript><p>Browse the topic links above, or use your browser’s Find command to search this page.</p></noscript>
+</div>
+<script src="{{ '/assets/js/browse.js' | relative_url }}" defer></script>

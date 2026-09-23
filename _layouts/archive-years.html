@@ -1,10 +1,10 @@
 ---
 layout: page
 ---
-
+{% include public-posts.html %}
 {{ content }}
 
-{%- assign taxonomies = site.posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
+{%- assign taxonomies = public_posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
 
 <div class="taxonomies-wrapper">
   <ul class="taxonomies">

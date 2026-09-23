@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["data-platforms", "ai-ml-systems"]
+summary: "The connected systems that acquire, validate, enrich, serve, and monitor production ML data."
+featured: false
 layout: post
 toc: true
 title: "The Data Operations Cycle"

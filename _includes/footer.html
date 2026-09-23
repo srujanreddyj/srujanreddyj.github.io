@@ -1,21 +1,4 @@
-<div class="footer-col-wrapper">
-
-  <div class="footer-col">
-    <div class="copyright">
-      {% assign year_from = site.posts[-1].date | date: '%Y' %}
-      {% assign year_to   = site.time | date: '%Y' %}
-      {% if year_from == nil or year_from == year_to %}
-        {% assign year_string = year_from %}
-      {% else %}
-        {% assign year_string = year_from | append: '&nbsp;' | append: '-' | append: '&nbsp;' | append: year_to %}
-      {% endif %}
-      {% if site.author %}
-      <p>Copyright © {{ year_string }} {{ site.author }}; All rights reserved.</p>
-      {% endif %}
-    </div>
-  </div>
-
-  <div class="footer-col">
-    <p>{{ site.description | escape }}</p>
-  </div>
+<div class="reader-footer">
+  <div><a class="footer-brand" href="{{ '/' | relative_url }}">Systems in Practice</a><p>Data platforms. Working systems. Lessons learned.</p><small>© {{ site.time | date: '%Y' }} {{ site.author }}</small></div>
+  <nav aria-label="Footer navigation"><a href="{{ '/years/' | relative_url }}">Archive</a><a href="{{ '/tags/' | relative_url }}">Tags</a><a href="{{ '/feed.xml' | relative_url }}">RSS</a><a href="{{ '/resume/' | relative_url }}">Resume</a><a href="mailto:{{ site.email }}">Contact</a>{% if site.reader_library_url != '' and site.reader_library_url %}<a href="{{ site.reader_library_url | escape }}">Reader sign-in</a>{% endif %}</nav>
 </div>

@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require 'yaml'
+require 'fileutils'
+root = File.expand_path('..', __dir__)
+YAML.safe_load_file(File.join(root, '_data/topics.yml')).each do |topic|
+  abort 'Invalid topic ID' unless topic.fetch('id').match?(/\A[a-z0-9-]+\z/)
+  directory = File.join(root, 'topics', topic.fetch('id'))
+  FileUtils.mkdir_p(directory)
+  data = { 'layout' => 'browse', 'title' => topic.fetch('title'), 'description' => topic.fetch('description'), 'topic' => topic.fetch('id') }
+  File.write(File.join(directory, 'index.html'), "#{data.to_yaml}---\n")
+end

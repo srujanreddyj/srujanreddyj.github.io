@@ -1,58 +1,58 @@
 ---
 layout: default
 ---
-
-<div class="home writing-home">
-  {% if site.paginate %}
-    {% assign posts = paginator.posts %}
-  {% else %}
-    {% assign posts = site.posts %}
-  {% endif %}
-  {% assign posts = posts | where_exp: "post", "post.hidden_home != true" %}
-
-  <section class="home-journal" aria-labelledby="home-title">
-    <header class="home-journal-header">
-      <h1 id="home-title">{{ site.title | escape }}</h1>
-      <p>{{ site.description | escape }}</p>
-    </header>
-
-    {% if posts.size > 0 %}
-      <ul class="post-list" id="writing">
-        {% assign date_format = site.date_format | default: "%b %-d, %Y" %}
-        {% for post in posts %}
-          <li class="post-card">
-            <div class="post-card-meta">
-              <time class="dt-published" datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">
-                {{ post.date | date: date_format }}
-              </time>
-              {% if post.categories and post.categories.size > 0 %}
-                <span>{{ post.categories | first }}</span>
-              {% endif %}
-            </div>
-            <h2><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h2>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No writing is published yet.</p>
-    {% endif %}
+{% include public-posts.html %}
+{% assign writing = public_posts | where_exp: 'post', 'post.content_type != "guide"' %}
+{% assign guides = public_posts | where: 'content_type', 'guide' %}
+<div class="discovery-home">
+  <section class="discovery-intro" aria-labelledby="intro-title">
+    <p class="eyebrow">Srujan Jabbireddy · Data engineer</p>
+    <h1 id="intro-title">Systems in practice.<br><em>Learning lessons.</em></h1>
+    <p class="intro-description">I build data platforms and write about how they work. Explore the architecture, implementation details, and tradeoffs behind reliable data and AI systems.</p>
+    <div class="intro-links">
+      <a href="https://github.com/{{ site.github_username }}">GitHub <span aria-hidden="true">↗</span></a>
+      <a href="https://www.linkedin.com/in/{{ site.linkedin_username | strip }}/">LinkedIn <span aria-hidden="true">↗</span></a>
+      <a href="{{ '/resume/' | relative_url }}">Resume <span aria-hidden="true">↗</span></a>
+    </div>
   </section>
 
-  {% if site.paginate %}
-    <nav class="pager" aria-label="Writing pagination">
-      <ul class="pagination">
-        {% if paginator.previous_page %}
-          <li><a href="{{ paginator.previous_page_path | relative_url }}" class="previous-page">Previous</a></li>
-        {% else %}
-          <li><div class="pager-edge">•</div></li>
-        {% endif %}
-        <li><div class="current-page">{{ paginator.page }}</div></li>
-        {% if paginator.next_page %}
-          <li><a href="{{ paginator.next_page_path | relative_url }}" class="next-page">Next</a></li>
-        {% else %}
-          <li><div class="pager-edge">•</div></li>
-        {% endif %}
-      </ul>
-    </nav>
-  {% endif %}
+  <section class="explore-section" aria-labelledby="explore-title">
+    <div class="section-heading"><div><h2 id="explore-title">Explore the work</h2><p>From working systems to the ideas behind them.</p></div></div>
+    <div class="discovery-grid">
+      <a class="discovery-card" href="{{ '/writing/' | relative_url }}">
+        <div class="card-overline"><span>The full library</span><span class="card-count">{{ public_posts.size }}</span></div>
+        <h3>Writing</h3><p>Technical deep dives, implementation lessons, and decisions made along the way.</p><span class="card-action">Browse writing <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="discovery-card" href="{{ '/portfolio/' | relative_url }}">
+        <div class="card-overline"><span>Selected work</span><span aria-hidden="true">↗</span></div>
+        <h3>Case studies</h3><p>Production data platforms, measured outcomes, and the architecture behind them.</p><span class="card-action">Explore the work <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="discovery-card" href="{{ '/guides/' | relative_url }}">
+        <div class="card-overline"><span>Keep for reference</span><span class="card-count">{{ guides.size }}</span></div>
+        <h3>Guides</h3><p>Structured references for studying data engineering and AI system design.</p><span class="card-action">Open the guides <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="discovery-card" href="{{ '/categories/' | relative_url }}">
+        <div class="card-overline"><span>Find your subject</span><span class="card-count">{{ site.data.topics.size }}</span></div>
+        <h3>Topics</h3><p>Follow a subject across articles, implementation notes, and study guides.</p><span class="card-action">Browse topics <span aria-hidden="true">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="topic-strip" aria-label="Browse by topic">
+    <span class="eyebrow">Follow your curiosity</span>
+    <div class="topic-links">{% for topic in site.data.topics %}<a href="{{ '/topics/' | append: topic.id | append: '/' | relative_url }}">{{ topic.title }}</a>{% endfor %}</div>
+  </section>
+
+  <section class="selected-section" aria-labelledby="selected-title">
+    <div class="section-heading"><div><h2 id="selected-title">A few places to start</h2><p>Selected writing on building and understanding systems.</p></div><a href="{{ '/writing/' | relative_url }}">All writing <span aria-hidden="true">→</span></a></div>
+    <div class="selected-grid">{% assign selected = public_posts | where: 'featured', true %}{% for post in selected limit:3 %}
+      <article class="selected-entry"><p class="eyebrow">{% assign topic = site.data.topics | where: 'id', post.topics.first | first %}{{ topic.title }}</p><h3><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h3><p>{{ post.summary | escape }}</p><a class="read-link" href="{{ post.url | relative_url }}" aria-label="Read {{ post.title | escape }}">Read article <span aria-hidden="true">→</span></a></article>
+    {% endfor %}</div>
+  </section>
+
+  <section class="recent-section" aria-labelledby="recent-title">
+    <div class="section-heading"><h2 id="recent-title">Recently published</h2><a href="{{ '/years/' | relative_url }}">Full archive <span aria-hidden="true">→</span></a></div>
+    <div class="reading-list">{% for post in writing limit:5 %}{% include content-row.html post=post compact=true %}{% endfor %}</div>
+  </section>
+  <section class="work-callout"><div><p class="eyebrow">From the field</p><h2>What changes when a system<br>meets production?</h2><p>Case studies in CDC, lakehouse design, event ingestion, and query performance.</p></div><a href="{{ '/portfolio/' | relative_url }}">Read the case studies <span aria-hidden="true">→</span></a></section>
 </div>

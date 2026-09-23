@@ -1,8 +1,12 @@
 ---
+visibility: public
+published: true
+content_type: guide
+topics: ["data-platforms", "ai-ml-systems"]
+summary: "A study guide to ingestion, enrichment, quality, governance, and operations at scale."
+featured: false
 layout: post
 toc: true
-hidden_home: true
-study_guide: true
 title: "Study Guide: Data Operations Architecture at Scale"
 categories: [learnings]
 tags: [markdown, data-engineering, mlops, data-operations, multimodal, governance, monitoring, study-guide]

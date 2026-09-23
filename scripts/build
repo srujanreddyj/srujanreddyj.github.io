@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")/.."
+ruby scripts/validate_content
+ruby scripts/generate_topics
+bundle exec jekyll build "$@"

@@ -1,0 +1,8 @@
+{% assign entry = include.post %}
+<article class="reading-row" data-entry data-title="{{ entry.title | escape }}" data-summary="{{ entry.summary | escape }}" data-topics="{{ entry.topics | join: ' ' | escape }}" data-kind="{{ entry.content_type | escape }}">
+  <div class="reading-date"><time datetime="{{ entry.date | date_to_xmlschema }}">{{ entry.date | date: '%b %d, %Y' }}</time><span>{{ entry.content_type | capitalize }}</span></div>
+  <div class="reading-copy"><h3><a href="{{ entry.url | relative_url }}">{{ entry.title | escape }}</a></h3>{% unless include.compact %}<p>{{ entry.summary | escape }}</p>{% endunless %}
+    <div class="reading-topics">{% for id in entry.topics %}{% assign topic = site.data.topics | where: 'id', id | first %}<a href="{{ '/topics/' | append: id | append: '/' | relative_url }}">{{ topic.title }}</a>{% endfor %}</div>
+  </div>
+  <a class="reading-arrow" href="{{ entry.url | relative_url }}" aria-label="Read {{ entry.title | escape }}"><span aria-hidden="true">↗</span></a>
+</article>

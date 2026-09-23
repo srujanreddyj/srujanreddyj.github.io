@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+require 'nokogiri'
+require 'pathname'
+require 'yaml'
+root = Pathname.new(File.expand_path('..', __dir__))
+built = Pathname.new(ARGV.fetch(0, root.join('_site').to_s))
+abort 'Build output not found.' unless built.join('index.html').file?
+page = ->(path) { Nokogiri::HTML(built.join(path).read) }
+writing = page.call('writing/index.html')
+count = writing.css('[data-entry]').size
+abort 'Writing index is empty.' if count.zero?
+abort 'Homepage cards missing.' unless page.call('index.html').css('.discovery-card').size == 4
+YAML.safe_load_file(root.join('_data/topics.yml')).each do |topic|
+  expected = writing.css('[data-entry]').count { |row| row['data-topics'].split.include?(topic['id']) }
+  actual = page.call("topics/#{topic['id']}/index.html").css('[data-entry]').size
+  abort "Topic count mismatch: #{topic['id']}" unless actual == expected
+end
+writing.css('[data-entry] h3 a').each do |link|
+  abort "Missing post URL: #{link['href']}" unless built.join(link['href'].sub(%r{^/}, '')).file?
+end
+%w[references presentations deployment scripts tests social].each do |directory|
+  abort "Nonpublic directory leaked: #{directory}" if built.join(directory).exist?
+end
+%w[feed.xml sitemap.xml].each { |name| abort "Missing #{name}" unless built.join(name).file? }
+puts "Built site verified: #{count} posts, topic counts, post URLs, feed/sitemap, and excluded source directories."

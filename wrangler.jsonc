@@ -3,7 +3,7 @@
   "name": "srujanenglabs",
   "compatibility_date": "2026-05-27",
   "build": {
-    "command": "bundle exec jekyll build"
+    "command": "./scripts/build"
   },
   "assets": {
     "directory": "./_site",

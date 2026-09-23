@@ -1,8 +1,12 @@
 ---
+visibility: public
+published: true
+content_type: guide
+topics: ["ai-ml-systems", "engineering-practice"]
+summary: "A reference to requirements, architecture, and operational concepts for agentic systems."
+featured: false
 layout: post
 toc: true
-hidden_home: true
-study_guide: true
 title: "Agentic Systems Design Interview Concept Glossary"
 categories: [learnings]
 tags: [agentic-systems, system-design, interview-prep, ai-infrastructure, glossary, study-guide]

@@ -36,20 +36,25 @@ plugins:
   - jekyll-octicons
   - jekyll-github-metadata
   - jekyll-sitemap
-  - jekyll-paginate
   - jekyll-remote-theme
   - jekyll-redirect-from
 
 feed:
   excerpt_only: true
 
-paginate: 10
+reader_library_url: "" # Set only after the protected deployment passes access tests.
 
 exclude:
+  - deployment/
   - scripts/
+  - tests/
+  - .github/
+  - social/
+  - wrangler.jsonc
   - README.md
   - jekyll-theme-hamilton.gemspec
-  # Private shelf: keep in git, do not publish to Pages.
+  # Reference documents: excluded from the site, but still visible in this repository.
+  - presentations/
   - references/
   - references.md
 

@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["ai-ml-systems", "data-platforms"]
+summary: "Examining the data preparation behind the Nemotron 3 Super pretraining corpus."
+featured: true
 layout: post
 toc: true
 title: "Inside Nemotron 3 Super: The Data Engineering Behind a 25-Trillion-Token Model"

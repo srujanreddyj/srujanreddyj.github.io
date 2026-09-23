@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["data-platforms", "ai-ml-systems"]
+summary: "How batch and streaming paths combine into consistent views for machine learning."
+featured: false
 layout: post
 toc: true
 title: "Batch, Streaming, and Merged Views in ML Data Operations"

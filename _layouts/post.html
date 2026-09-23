@@ -4,6 +4,7 @@ layout: default
 
 <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
+  <nav class="article-breadcrumb" aria-label="Breadcrumb"><a href="{{ '/writing/' | relative_url }}">Writing</a>{% for id in page.topics %}{% assign topic = site.data.topics | where: 'id', id | first %}<span aria-hidden="true"> / </span><a href="{{ '/topics/' | append: id | append: '/' | relative_url }}">{{ topic.title }}</a>{% endfor %}</nav>
   <header class="post-header">
 
     <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
@@ -66,7 +67,7 @@ layout: default
     {% endif %}
 
     <nav class="post-pagination" role="navigation">
-      {% if page.previous %}
+      {% if page.previous and page.previous.visibility == "public" %}
         <a class="post-previous" href="{{ page.previous.url | relative_url }}">
           <h4 class="post-pagination-label">Prev</h4>
           <span class="post-pagination-title">
@@ -75,7 +76,7 @@ layout: default
         </a>
       {% endif %}
 
-      {% if page.next %}
+      {% if page.next and page.next.visibility == "public" %}
         <a class="post-next" href="{{ page.next.url | relative_url }}">
           <h4 class="post-pagination-label">Next</h4>
           <span class="post-pagination-title">

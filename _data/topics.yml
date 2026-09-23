@@ -1,0 +1,15 @@
+- id: data-platforms
+  title: Data platforms
+  description: Pipelines, lakehouses, streaming, and reliable data operations.
+- id: distributed-systems
+  title: Distributed systems
+  description: Concurrency, coordination, scaling, and the cost of failure.
+- id: ai-ml-systems
+  title: AI & ML systems
+  description: Training data, feature stores, retrieval, and model evaluation.
+- id: databases-querying
+  title: Databases & querying
+  description: Storage layouts, catalogs, indexing, and query performance.
+- id: engineering-practice
+  title: Engineering practice
+  description: Design decisions, implementation lessons, and technical communication.

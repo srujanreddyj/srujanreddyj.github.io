@@ -1,4 +1,10 @@
 ---
+visibility: public
+published: true
+content_type: article
+topics: ["distributed-systems", "engineering-practice"]
+summary: "Why CPU-bound Python threads stall, and when processes are the better tool."
+featured: true
 layout: post
 toc: true
 title: "Why 8 Python Threads Can Still Use Only 1 Core"

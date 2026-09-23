@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+require 'yaml'
+require 'date'
+require 'pathname'
+root = Pathname.new(File.expand_path('..', __dir__))
+topics = YAML.safe_load_file(root.join('_data/topics.yml')).map { |t| t.fetch('id') }
+errors = []
+%w[references presentations].each do |name|
+  path = root.join(name)
+  errors << "#{name}/ is restricted; move it to the separate private library" if path.exist?
+end
+errors << 'references.md belongs in the private library' if root.join('references.md').exist?
+Dir[root.join('_posts/**/*').to_s].select { |f| File.file?(f) }.each do |file|
+  # Only read front matter; older articles contain large inline plot bundles.
+  lines = []
+  File.open(file) do |input|
+    if input.gets&.strip != '---'
+      errors << "#{file}: missing front matter"
+      next
+    end
+    input.each_line { |line| break if line.strip == '---'; lines << line }
+  end
+  begin
+    data = YAML.safe_load(lines.join, permitted_classes: [Date, Time]) || {}
+    issues = []
+    issues << 'visibility must be public; never commit restricted content to this source' unless data['visibility'] == 'public'
+    issues << 'published must be true or false' unless [true, false].include?(data['published'])
+    issues << 'content_type must be article, note, or guide' unless %w[article note guide].include?(data['content_type'])
+    issues << 'topics must use known IDs' unless data['topics'].is_a?(Array) && !data['topics'].empty? && (data['topics'] - topics).empty?
+    issues << 'summary is required' unless data['summary'].is_a?(String) && !data['summary'].strip.empty?
+    errors << "#{Pathname.new(file).relative_path_from(root)}: #{issues.join('; ')}" unless issues.empty?
+  rescue Psych::Exception => error
+    errors << "#{file}: #{error.message}"
+  end
+end
+abort errors.join("\n") unless errors.empty?
+puts 'Content metadata valid. This source contains public-audience posts only.'

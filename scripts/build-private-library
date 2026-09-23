@@ -1,0 +1,97 @@
+#!/usr/bin/env ruby
+# Usage: READER_BASE_URL=https://readers.example.com bundle exec ruby scripts/build-private-library /outside/this/repo/private-content
+require 'yaml'
+require 'date'
+require 'pathname'
+require 'fileutils'
+require 'tmpdir'
+require 'uri'
+require_relative 'private_resources'
+public_root = Pathname.new(File.expand_path('..', __dir__)).realpath
+abort 'Provide the private content directory.' unless ARGV.length == 1
+private_root = Pathname.new(ARGV.first).realpath
+abort 'Private content must live outside this public repository.' if private_root == public_root || private_root.to_s.start_with?(public_root.to_s + '/')
+url = URI(ENV.fetch('READER_BASE_URL', ''))
+abort 'Set READER_BASE_URL to the protected HTTPS origin.' unless url.is_a?(URI::HTTPS) && url.host && ['', '/'].include?(url.path) && !url.query && !url.fragment && !url.userinfo
+posts = Dir[private_root.join('_posts/*.md').to_s]
+resource_files = %w[references presentations].flat_map { |dir| Dir[private_root.join(dir, '**/*').to_s].select { |p| File.file?(p) } }
+abort 'No private content found.' if posts.empty? && resource_files.empty?
+known_topics = YAML.safe_load_file(public_root.join('_data/topics.yml')).map { |topic| topic.fetch('id') }
+posts.each do |path|
+  data = YAML.safe_load(File.read(path).split(/^---\s*$\n?/, 3)[1] || '', permitted_classes: [Date, Time]) || {}
+  abort "#{path}: visibility must be restricted" unless data['visibility'] == 'restricted'
+  abort "#{path}: published must be true or false" unless [true, false].include?(data['published'])
+  abort "#{path}: invalid format" unless %w[article note guide].include?(data['content_type'])
+  abort "#{path}: title and summary required" unless %w[title summary].all? { |key| data[key].is_a?(String) && !data[key].strip.empty? }
+  abort "#{path}: invalid topics" unless data['topics'].is_a?(Array) && !data['topics'].empty? && (data['topics'] - known_topics).empty?
+end
+# Do not follow links into public source trees or unrelated files.
+%w[_posts assets references presentations].each do |dir|
+  base = private_root.join(dir)
+  next unless base.exist?
+  abort "Symlinks are not allowed in private #{dir}." if base.symlink? || Dir[base.join('**/*').to_s].any? { |p| File.symlink?(p) }
+end
+destination = private_root.join('_site')
+abort 'Private output must not be a symlink.' if destination.symlink?
+Dir.mktmpdir('.reader-build-', private_root.to_s) do |stage|
+  %w[_layouts _includes _sass].each { |dir| FileUtils.cp_r(public_root.join(dir), stage) }
+  FileUtils.mkdir_p(File.join(stage, '_data'))
+  FileUtils.cp(public_root.join('_data/topics.yml'), File.join(stage, '_data/topics.yml'))
+  FileUtils.cp_r(private_root.join('_posts'), stage) if private_root.join('_posts').directory?
+  FileUtils.cp_r(private_root.join('assets'), stage) if private_root.join('assets').directory?
+  FileUtils.mkdir_p(File.join(stage, 'assets'))
+  %w[css js].each do |dir|
+    FileUtils.rm_rf(File.join(stage, 'assets', dir))
+    FileUtils.cp_r(public_root.join('assets', dir), File.join(stage, 'assets'))
+  end
+  config = YAML.safe_load_file(public_root.join('_config.yml'))
+  config.merge!('url' => url.to_s.sub(%r{/$}, ''), 'baseurl' => '', 'title' => 'Reader library',
+                'google_analytics' => nil, 'reader_library_url' => '', 'disqus' => nil,
+                'source' => stage, 'destination' => destination.to_s)
+  config['plugins'] -= %w[jekyll-feed jekyll-sitemap]
+  config['exclude'] -= %w[references/ presentations/ references.md]
+  resources = PrivateResources.build(private_root, stage)
+  File.write(File.join(stage, '_config.yml'), config.to_yaml)
+  navigation = [{ 'title' => 'Library', 'url' => '/' }] + resources.map { |r| r['group'] }.uniq.map { |group| { 'title' => group.capitalize, 'url' => '/' + group + '/' } } + [{ 'title' => 'Sign out', 'url' => '/cdn-cgi/access/logout' }]
+  File.write(File.join(stage, '_data/navigation.yml'), navigation.to_yaml)
+  File.write(File.join(stage, '_includes/public-posts.html'), '{% assign public_posts = site.posts | where: "visibility", "restricted" | where: "published", true %}')
+  if posts.empty?
+    links = resources.map { |r| r['group'] }.uniq.map { |group| "<li><a href=\"/#{group}/\">#{CGI.escapeHTML(group.capitalize)}</a></li>" }.join
+    File.write(File.join(stage, 'index.html'), { 'layout' => 'default', 'title' => 'Reader library', 'noindex' => true }.to_yaml + "---\n<header class=\"browse-heading\"><h1>Reader library</h1><p>Documents and presentations shared with approved readers.</p></header><ul>#{links}</ul>")
+  else
+    File.write(File.join(stage, 'index.html'), { 'layout' => 'browse', 'title' => 'Reader library', 'description' => 'Writing shared with approved readers.' }.to_yaml + "---\n")
+  end
+  File.write(File.join(stage, '_includes/footer.html'), '<div class="reader-footer"><p>Reader library</p><a href="/cdn-cgi/access/logout">Sign out</a></div>')
+  head = File.join(stage, '_includes/head.html')
+  File.write(head, File.read(head).gsub('{% feed_meta %}', '<meta name="robots" content="noindex,nofollow,noarchive">'))
+  # Public-only archive destinations do not exist in this separate library.
+  post = File.join(stage, '_layouts/post.html')
+  text = File.read(post).gsub("'/writing/'", "'/'").gsub('== "public"', '== "restricted"')
+  text = text.sub(/    {% if page.categories.size > 0 %}.*?    <nav class="post-pagination"/m, '    <nav class="post-pagination"')
+  File.write(post, text)
+  browse = File.join(stage, '_layouts/browse.html')
+  File.write(browse, File.read(browse).gsub("'/writing/'", "'/'"))
+  known_topics.each do |id|
+    topic = YAML.safe_load_file(public_root.join('_data/topics.yml')).find { |t| t['id'] == id }
+    directory = File.join(stage, 'topics', id)
+    FileUtils.mkdir_p(directory)
+    File.write(File.join(directory, 'index.html'), { 'layout' => 'browse', 'title' => topic['title'], 'description' => topic['description'], 'topic' => id }.to_yaml + "---\n")
+  end
+  File.write(File.join(stage, 'robots.txt'), "User-agent: *\nDisallow: /\n")
+  File.write(File.join(stage, '404.html'), { 'layout' => 'default', 'title' => 'Page not found' }.to_yaml + "---\n<h1>Page not found</h1><a href=\"/\">Return to the library</a>\n")
+  success = system('bundle', 'exec', 'jekyll', 'build', '--source', stage, '--config', File.join(stage, '_config.yml'), '--destination', destination.to_s)
+  abort 'Private build failed.' unless success
+  # Copy original Markdown after rendering so front matter cannot create public aliases
+  # or override rendered reference pages during Jekyll's page pass.
+  resource_files.select { |path| File.extname(path).downcase == '.md' }.each do |path|
+    relative = Pathname.new(path).relative_path_from(private_root)
+    download = destination.join('downloads', relative)
+    FileUtils.mkdir_p(download.dirname)
+    FileUtils.cp(path, download)
+  end
+  # github-pages may auto-enable these plugins. Neither file is needed here.
+  %w[feed.xml sitemap.xml].each { |name| FileUtils.rm_f(destination.join(name)) }
+  oversized = Dir[destination.join('**/*').to_s].select { |p| File.file?(p) && File.size(p) > 25 * 1024 * 1024 }
+  abort "Files exceed the static-asset size limit: #{oversized.join(', ')}" unless oversized.empty?
+end
+puts "Private output: #{destination}. Deploy only behind the reader Worker and Cloudflare Access."
