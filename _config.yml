@@ -45,6 +45,11 @@ feed:
 reader_library_url: "" # Set only after the protected deployment passes access tests.
 
 exclude:
+  - vendor/
+  - .bundle/
+  - node_modules/
+  - Gemfile
+  - Gemfile.lock
   - deployment/
   - scripts/
   - tests/

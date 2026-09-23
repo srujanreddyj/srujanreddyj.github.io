@@ -18,7 +18,7 @@ end
 writing.css('[data-entry] h3 a').each do |link|
   abort "Missing post URL: #{link['href']}" unless built.join(link['href'].sub(%r{^/}, '')).file?
 end
-%w[references presentations deployment scripts tests social].each do |directory|
+%w[references presentations deployment scripts tests social vendor node_modules .bundle].each do |directory|
   abort "Nonpublic directory leaked: #{directory}" if built.join(directory).exist?
 end
 %w[feed.xml sitemap.xml].each { |name| abort "Missing #{name}" unless built.join(name).file? }
