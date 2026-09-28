@@ -1,4 +1,4 @@
 <div class="reader-footer">
   <div><a class="footer-brand" href="{{ '/' | relative_url }}">Systems in Practice</a><p>Data platforms. Working systems. Lessons learned.</p><small>© {{ site.time | date: '%Y' }} {{ site.author }}</small></div>
-  <nav aria-label="Footer navigation"><a href="{{ '/years/' | relative_url }}">Archive</a><a href="{{ '/tags/' | relative_url }}">Tags</a><a href="{{ '/feed.xml' | relative_url }}">RSS</a><a href="{{ '/resume/' | relative_url }}">Resume</a><a href="mailto:{{ site.email }}">Contact</a>{% if site.reader_library_url != '' and site.reader_library_url %}<a href="{{ site.reader_library_url | escape }}">Reader sign-in</a>{% endif %}</nav>
+  <nav aria-label="Footer navigation"><a href="{{ '/years/' | relative_url }}">Archive</a><a href="{{ '/tags/' | relative_url }}">Tags</a><a href="{{ '/feed.xml' | relative_url }}">RSS</a><a href="{{ '/resume/' | relative_url }}">Resume</a><a href="mailto:{{ site.email }}">Contact</a>{% if site.reader_library_url != '' and site.reader_library_url %}<a href="{{ '/library/' | relative_url }}">Private library</a>{% endif %}</nav>
 </div>

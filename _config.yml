@@ -42,7 +42,7 @@ plugins:
 feed:
   excerpt_only: true
 
-reader_library_url: "" # Set only after the protected deployment passes access tests.
+reader_library_url: "https://systems-in-practice-library.jsrujanreddy.workers.dev"
 
 exclude:
   - vendor/
