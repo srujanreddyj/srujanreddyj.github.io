@@ -58,6 +58,8 @@ exclude:
   - wrangler.jsonc
   - README.md
   - jekyll-theme-hamilton.gemspec
+  # Preserve downloadable Cursor rule front matter in source and the ZIP bundle.
+  - examples/cursor-abstractions/
   # Reference documents: excluded from the site, but still visible in this repository.
   - presentations/
   - references/

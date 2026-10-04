@@ -1,0 +1,45 @@
+---
+alwaysApply: true
+---
+
+# Preserve and improve useful abstractions
+
+For code changes, read applicable project instructions and architecture decisions.
+Read docs/abstraction-map.md if present, focusing on affected modules. If the map
+is missing or stale, inspect real source, callers, and tests. Do not block ordinary
+work on the absence of a map, and do not treat proposed entries as approved rules.
+
+Before a substantive edit:
+- Identify the module that should own the behavior, its interface, relevant
+  callers, and rules that must remain true. State this briefly in the plan.
+- Search for existing operations that meet the requirement before adding one.
+- Reuse useful abstractions through their public interfaces. Keep business rules
+  with their owner; avoid direct internal-state access or duplicated coordination.
+
+When implementing:
+- Preserve existing contracts unless the requested change requires a change.
+- Shape interfaces around caller tasks. Include relevant inputs, results, failure
+  behavior, side effects, ordering, and performance limits in the contract.
+- Keep complexity within its owning module when this reduces caller knowledge.
+- Do not add pass-through layers, generic frameworks, or speculative extension
+  points without a concrete need. Small functions and adapters can still be useful.
+- Do not copy a weak pattern merely because it already exists. If an abstraction
+  does not fit, explain the gap and make the smallest justified local improvement
+  within the task. Avoid unrelated refactors.
+- For persistent state and external effects, examine relevant concurrency, retry,
+  partial-failure, and consistency rules. Do not assume a transaction covers remote
+  services or that atomicity alone ensures correct concurrent behavior.
+- Ask only when a material choice is unresolved, such as changed public behavior,
+  data compatibility, ownership, or consistency guarantees. Continue unaffected work.
+- If changing a contract, trace affected callers and migrate them coherently.
+  Preserve compatibility when required; explain any necessary transition.
+
+Before declaring completion:
+- Run appropriate existing checks and verify observable behavior through the
+  interface. Add focused regression coverage when the changed contract warrants it.
+- Review the actual diff for duplicated rules, internal access across modules,
+  hidden side effects, unnecessary layers, and affected callers left unchanged.
+- Update the relevant abstraction-map entry if ownership or contracts changed.
+  Keep observed behavior and proposed design clearly separated.
+- Report the behavior changed, modules reused or changed, verification results,
+  and any unresolved contract risk. Do not claim checks passed without running them.

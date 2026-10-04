@@ -1,0 +1,32 @@
+---
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Python abstractions in a monorepo
+
+- Determine package ownership and supported entry points from source, callers,
+  packaging configuration, and project decisions. An __init__.py export may help
+  identify the interface, but it is not the only possible public entry point.
+- Use the owning package's supported operations. Avoid new cross-package imports
+  of private implementation modules or names marked with a leading underscore.
+  If existing callers do this, identify the contract gap before expanding it.
+- Keep domain rules with the package that owns them. Do not move business behavior
+  into a shared utility package solely to remove duplication or resolve an import.
+- Follow established dependency direction. Avoid new circular imports, sys.path
+  modifications, or import-time side effects used to connect packages. A justified
+  local import is not automatically a defect; examine the dependency it represents.
+- Reuse existing functions, types, and dependency-injection conventions. Introduce
+  a class, Protocol, abstract base class, registry, or factory only when it solves
+  a concrete contract or variation problem. Do not add them to improve a score.
+- Make relevant inputs, return values, exceptions, mutation, resource lifetime,
+  and sync/async behavior clear. Use established type-checking conventions; type
+  hints alone do not enforce runtime business rules.
+- Avoid new hidden module-level mutable state. Pass or encapsulate dependencies
+  according to existing conventions when state ownership or test setup needs it.
+- Test meaningful behavior at supported interfaces with the project's tools.
+  Prefer explicit dependencies when internal monkeypatching masks ownership, but
+  do not ban useful monkeypatching or replace established tests without a need.
+- Run the affected package's checks and relevant consumer/integration checks when
+  a shared contract changes. State what was and was not tested. Do not install a
+  new linter or test framework simply to perform this assessment.

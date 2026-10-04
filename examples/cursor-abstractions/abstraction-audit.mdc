@@ -1,0 +1,100 @@
+---
+alwaysApply: false
+---
+
+# Assess abstraction quality in an existing project
+
+Perform an evidence-based assessment. Do not refactor application code, change
+dependencies, or alter runtime configuration during the audit. Create or update
+only the requested report and abstraction map. Preserve existing documentation.
+
+A module is a function, class, package, or larger unit with an interface and an
+implementation. Its interface includes every fact callers need for correct use:
+inputs, outputs, rules that must remain true, ordering, errors, side effects,
+configuration, and relevant performance limits.
+
+## Establish scope
+
+- Read existing project instructions and architecture decisions first.
+- Identify the language, framework, entry points, module organization, and tests.
+- This is a Python monorepo. Map packages from actual packaging configuration,
+  including pyproject.toml, setup.cfg/setup.py, workspace tools, and src layouts
+  where present. Inspect entry points, __init__.py exports, dependency declarations,
+  imports, and test configuration. Folder names alone do not establish ownership.
+- Start with one frequently changed package and trace its important cross-package
+  callers. Expand only enough to support findings; list packages not inspected.
+- Ask a short, bundled question only when answers materially change the audit:
+  the target area, important business rules, or the intended behavior where code
+  and documentation disagree. Continue independent inspection while waiting.
+- If no area is specified, select three representative workflows, including one
+  frequently changed workflow and one with meaningful failure or concurrency
+  behavior. Explain the selection. Label the result a sampled assessment.
+- Record the revision when available, local changes, inspected paths, exclusions,
+  and constraints. Never claim to have reviewed the whole project from a sample.
+
+## Trace real behavior
+
+- For each workflow, trace entry point -> callers -> module interface -> state
+  changes or external effects. Include important errors and alternate paths.
+- Read representative callers as well as implementations and tests. Trace
+  upstream/downstream dependencies when needed to support a finding.
+- Identify rules callers must coordinate themselves, repeated business rules,
+  undocumented sequencing, direct access to another module's internal state,
+  hidden shared state, and failure cleanup spread across callers.
+- Inspect a few relevant recent changes if history is available. Use them as
+  evidence of changes spreading across modules, not as an automatic verdict.
+- Examine cross-package internal imports, circular dependencies, business rules
+  in shared utility packages, module-level mutable state, import-time side effects,
+  and conftest.py setup or monkeypatching that may conceal dependency problems.
+  These are investigation prompts, not automatic defects. Explain actual impact.
+- Distinguish verified behavior, documented intent, inferred behavior, and
+  unknowns. A passing test supports only the behavior it exercises.
+- Do not infer quality from file counts, class counts, method counts, design
+  pattern names, or implementation/interface line ratios. Thin adapters may be
+  useful when they isolate a real dependency; do not penalize them automatically.
+
+## Score each inspected module
+
+Use these ordinal ratings independently for each dimension:
+
+| Dimension | 0: poor | 1: weak | 2: adequate | 3: strong |
+| --- | --- | --- | --- | --- |
+| Caller knowledge | Callers coordinate internals | Frequent internal knowledge or workarounds | Mostly task-oriented, some extra rules | Small task-oriented interface; necessary rules are explicit |
+| Rule ownership | Rules conflict across callers | Rules repeat in several places | Mostly one owner with limited exceptions | One clear owner enforces rules across inspected callers |
+| Change locality | Routine changes spread across unrelated modules | Several callers need coordinated edits | Most internal changes stay local | Evidence shows internal changes stay local with stable contracts |
+| Contract reliability | Observed behavior violates promises | Important failures or concurrency rules are unclear | Main promises hold; gaps are explicit | Relevant success, failure, and concurrency promises have evidence |
+| Composition | Combining operations breaks rules | Callers need fragile coordination | Explicit coordination with known limits | Operations combine through clear contracts without hidden interference |
+| Verification | Relevant behavior cannot be checked reliably | Mostly tests tied to implementation details | Main interface behavior is checked | Tests or observations check relevant contracts, including failure cases |
+
+- For every rating, give repository-relative file paths and verified line numbers,
+  one concrete example, its caller impact, and confidence: high, medium, or low.
+- Use "unknown" for insufficient evidence and "N/A" with a reason when a dimension
+  does not apply. Missing tests do not prove incorrect runtime behavior.
+- Keep scores per module and dimension. Do not invent an overall project score.
+  Scores guide discussion; they are not validated measurements.
+- For each weak area, identify the smallest useful improvement and its tradeoff.
+  Do not recommend a wrapper unless it removes caller knowledge or coordination.
+
+## Produce the requested documents
+
+Use existing documentation locations where suitable; otherwise create:
+
+1. docs/abstraction-assessment.md
+   - Scope, revision, inspected workflows, exclusions, and unresolved questions.
+   - A workflow diagram and evidence-backed module scorecard.
+   - Useful abstractions worth preserving, with real caller examples.
+   - Up to three priority improvements, ranked by correctness risk or repeated
+     development cost. Include supporting evidence and expected caller benefit.
+   - Verification performed, results, and checks not performed.
+
+2. docs/abstraction-map.md
+   - For each useful module: responsibility, public entry points, implementation
+     path, representative caller, contract tests, and allowed dependencies.
+   - Rules it owns, errors, side effects, ordering/concurrency behavior, and limits.
+   - Mark each entry "observed", "documented intent", or "proposed"; record conflicts.
+   - Separate current behavior from desired design. Never present a proposed rule
+     or an undocumented inference as an established project guarantee.
+   - Link existing decisions and source files instead of copying implementation.
+
+Do not turn every existing pattern into a development rule. Explain uncertainty
+and ask about consequential contract conflicts before proposing enforcement.
