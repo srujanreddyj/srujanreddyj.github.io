@@ -24,7 +24,7 @@ not an assessment of your repository or proof of correct behavior.
 
 [Download the rules and usage instructions as a ZIP]({{ '/assets/downloads/cursor-abstraction-rules.zip' | relative_url }}).
 
-The [source folder on GitHub](https://github.com/srujanreddyj/srujanreddyj.github.io/tree/master/examples/cursor-abstractions)
+The [source folder on GitHub](https://github.com/srujanreddyj/srujanreddyj.github.io/tree/master/notes/cursor-abstractions)
 contains the individual files and the README. Download the raw files if copying them
 individually so their YAML front matter remains intact.
 
@@ -56,7 +56,7 @@ view, confirm the activation settings in the table. The audit rule intentionally
 omits `description` and `globs` and sets `alwaysApply: false`, which makes it manual.
 The development rule sets `alwaysApply: true`. The Python rule uses `globs: "**/*.py"`.
 
-Install these in the project you want to assess. Keeping the downloadable examples
+Install these in the project you want to assess. Keeping the downloadable rules
 in a website repository does not activate them there.
 
 ## Run an initial assessment
