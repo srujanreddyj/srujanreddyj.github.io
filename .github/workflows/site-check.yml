@@ -19,6 +19,7 @@ jobs:
           cache: npm
           cache-dependency-path: deployment/readers/package-lock.json
       - run: ruby tests/content_policy.rb
+      - run: ruby tests/resources.rb
       - run: bundle exec ruby tests/private_resources.rb
       - run: ./scripts/build
       - run: bundle exec ruby scripts/check_site

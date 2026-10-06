@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require_relative 'resources'
+begin
+  entries = JSON.parse(File.read(File.join(Resources::ROOT, '_data/resources.json')))
+  Resources.validate(entries)
+  puts "Resources validated: #{entries.size} unique URLs, valid metadata."
+rescue ArgumentError, SystemCallError => e
+  abort "Resource validation failed: #{e.message}"
+end

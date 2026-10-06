@@ -44,3 +44,7 @@ Never commit restricted posts or assets here. `visibility: restricted` causes th
 The reader Worker and private build path are implemented, but sign-in requires a configured Cloudflare Access application, verified hostname, audience ID, approved-email list, and live access checks. Leave `reader_library_url` empty until those checks pass. A blank value keeps the public sign-in link hidden.
 
 All files under `references/` and `presentations/` are restricted. They have been moved out of this public working tree into a separate local private library. These paths are ignored, excluded from public builds, and rejected by validation if reintroduced. Previously pushed copies still exist in Git history and on GitHub until the removal is published and historical exposure is addressed. Drafts in this public repository are also readable as source.
+
+## Resources directory
+
+The public `/resources/` directory builds from committed `_data/resources.json`. Edit the collection in Obsidian, then run `OBSIDIAN_VAULT="/path/to/vault" ./scripts/publish_resources_check`. Review the generated diff, commit, and push. Google Drive syncs the source notes; Git publishes the directory. See [the resource workflow](scripts/RESOURCES.md) for entry syntax, validation, and source cleanup notes.

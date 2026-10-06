@@ -2,6 +2,7 @@
 require 'nokogiri'
 require 'pathname'
 require 'yaml'
+require 'json'
 root = Pathname.new(File.expand_path('..', __dir__))
 built = Pathname.new(ARGV.fetch(0, root.join('_site').to_s))
 abort 'Build output not found.' unless built.join('index.html').file?
@@ -23,3 +24,9 @@ end
 end
 %w[feed.xml sitemap.xml].each { |name| abort "Missing #{name}" unless built.join(name).file? }
 puts "Built site verified: #{count} posts, topic counts, post URLs, feed/sitemap, and excluded source directories."
+resources = page.call('resources/index.html')
+expected_resources = JSON.parse(root.join('_data/resources.json').read)
+abort 'Resource count mismatch' unless resources.css('[data-resource]').size == expected_resources.size
+abort 'Resources navigation missing' unless resources.css('.primary-nav a').any? { |a| a['href'] == '/resources/' }
+abort 'Resources filters missing' unless resources.css('select').size == 4
+puts "Resources page verified: #{expected_resources.size} rows, navigation, and four filters."

@@ -1,0 +1,171 @@
+[
+  {
+    "title": "Machine Learning Engineering Open Book",
+    "url": "https://github.com/stas00/ml-engineering",
+    "summary": "Practical guidance for training and operating LLM and multimodal-model systems, including infrastructure, orchestration, inference, and debugging.",
+    "status": "to-read",
+    "topics": [
+      "ML engineering",
+      "LLMOps",
+      "training",
+      "inference"
+    ],
+    "purpose": "learning",
+    "type": "book",
+    "source_collection": "3-Resources/Articles-Blogs/Engineering AI Agents and Career Resource Collection.md",
+    "added_at": null
+  },
+  {
+    "title": "The Art of Debugging Open Book",
+    "url": "https://github.com/stas00/the-art-of-debugging",
+    "summary": "Debugging methods and tool-based recipes for Unix, Python, PyTorch, and compiled programs.",
+    "status": "to-read",
+    "topics": [
+      "debugging",
+      "Python",
+      "PyTorch",
+      "developer tools"
+    ],
+    "purpose": "learning",
+    "type": "book",
+    "source_collection": "3-Resources/Articles-Blogs/Engineering AI Agents and Career Resource Collection.md",
+    "added_at": null
+  },
+  {
+    "title": "Hermes Agent User Stories",
+    "url": "https://hermes-agent.nousresearch.com/docs/user-stories",
+    "summary": "Examples of how users apply the Hermes agent.",
+    "status": "to-read",
+    "topics": [
+      "AI agents",
+      "use cases",
+      "automation"
+    ],
+    "purpose": "learning",
+    "type": "documentation",
+    "source_collection": "3-Resources/Articles-Blogs/Engineering AI Agents and Career Resource Collection.md",
+    "added_at": null
+  },
+  {
+    "title": "Complete Agent Flywheel Guide",
+    "url": "https://agent-flywheel.com/complete-guide",
+    "summary": "Planning, Beads, and agent-swarm workflow guide.",
+    "status": "to-read",
+    "topics": [
+      "AI agents",
+      "agent orchestration",
+      "software delivery"
+    ],
+    "purpose": "learning",
+    "type": "guide",
+    "source_collection": "3-Resources/Articles-Blogs/Engineering AI Agents and Career Resource Collection.md",
+    "added_at": null
+  },
+  {
+    "title": "Trust Outcomes, Not Agents",
+    "url": "https://zenn.dev/sc30gsw/books/080faba713547b/viewer/27a183",
+    "summary": "Japanese chapter on building an environment for AI-agent development, with artifact-based trust.",
+    "status": "to-read",
+    "topics": [
+      "AI agents",
+      "developer platform",
+      "software delivery"
+    ],
+    "purpose": "learning",
+    "type": "unspecified",
+    "source_collection": "3-Resources/Articles-Blogs/Engineering AI Agents and Career Resource Collection.md",
+    "added_at": null
+  },
+  {
+    "title": "Awesome Multi-Agent Orchestrators — Agent Analytics",
+    "url": "https://github.com/Agent-Analytics/awesome-multi-agent-orchestrators",
+    "summary": "Curated directory of multi-agent orchestration tools.",
+    "status": "to-read",
+    "topics": [
+      "multi-agent systems",
+      "agent orchestration",
+      "tooling"
+    ],
+    "purpose": "learning",
+    "type": "directory",
+    "source_collection": "3-Resources/Articles-Blogs/Engineering AI Agents and Career Resource Collection.md",
+    "added_at": null
+  },
+  {
+    "title": "Awesome Agent Orchestrators — andyrewlee",
+    "url": "https://github.com/andyrewlee/awesome-agent-orchestrators",
+    "summary": "List of agent-orchestration frameworks and tools.",
+    "status": "to-read",
+    "topics": [
+      "multi-agent systems",
+      "agent orchestration",
+      "tooling"
+    ],
+    "purpose": "learning",
+    "type": "directory",
+    "source_collection": "3-Resources/Articles-Blogs/Engineering AI Agents and Career Resource Collection.md",
+    "added_at": null
+  },
+  {
+    "title": "AI Company Hiring Challenges Hub",
+    "url": "https://ai-company-hiring-challenges-hub.vercel.app/",
+    "summary": "Hiring-challenge resource for AI companies.",
+    "status": "to-read",
+    "topics": [
+      "interview prep",
+      "AI engineering",
+      "career"
+    ],
+    "purpose": "interview-prep",
+    "type": "unspecified",
+    "source_collection": "3-Resources/Articles-Blogs/Engineering AI Agents and Career Resource Collection.md",
+    "added_at": null
+  },
+  {
+    "title": "Breakscale",
+    "url": "https://breakscale.tech/",
+    "summary": "",
+    "status": "to-read",
+    "topics": [
+      "software engineering",
+      "systems design",
+      "career development"
+    ],
+    "purpose": "career",
+    "type": "unspecified",
+    "source_collection": "3-Resources/Articles-Blogs/Engineering AI Agents and Career Resource Collection.md",
+    "added_at": null,
+    "notes": "Also listed in [[Backend and Technical Leadership Reading List]]."
+  },
+  {
+    "title": "The Accidental CTO",
+    "url": "https://github.com/subhashchy/The-Accidental-CTO",
+    "summary": "",
+    "status": "to-read",
+    "topics": [
+      "technical leadership",
+      "CTO",
+      "engineering management"
+    ],
+    "purpose": "leadership",
+    "type": "repository",
+    "source_collection": "3-Resources/Articles-Blogs/Engineering AI Agents and Career Resource Collection.md",
+    "added_at": null,
+    "notes": "Also listed in [[Backend and Technical Leadership Reading List]]."
+  },
+  {
+    "title": "From Zero to Option Hero",
+    "url": "https://www.lordfed.co.uk/p/from-zero-to-option-hero",
+    "summary": "Introduction to options trading.",
+    "status": "to-read",
+    "topics": [
+      "options",
+      "investing",
+      "finance"
+    ],
+    "purpose": "finance",
+    "type": "unspecified",
+    "source_collection": "3-Resources/Articles-Blogs/Engineering AI Agents and Career Resource Collection.md",
+    "added_at": null
+  }
+]

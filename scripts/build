@@ -2,5 +2,6 @@
 set -eu
 cd "$(dirname "$0")/.."
 ruby scripts/validate_content
+ruby scripts/validate_resources
 ruby scripts/generate_topics
 bundle exec jekyll build "$@"

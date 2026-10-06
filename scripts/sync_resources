@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+require_relative 'resources'
+require 'optparse'
+options = {}
+OptionParser.new do |o|
+  o.banner = 'Usage: ruby scripts/sync_resources [--vault PATH | --source FILE]'
+  o.on('--vault PATH') { |v| options[:vault] = v }
+  o.on('--source FILE') { |v| options[:source] = v }
+end.parse!
+begin
+  vault = options[:vault] || ENV['OBSIDIAN_VAULT']
+  source = options[:source] || (File.join(vault, Resources::COLLECTION) if vault)
+  abort 'Set OBSIDIAN_VAULT or pass --vault PATH or --source FILE.' unless source
+  entries, warnings = Resources.parse(File.read(source))
+  output = File.join(Resources::ROOT, '_data/resources.json')
+  content = JSON.pretty_generate(entries) + "\n"
+  if File.exist?(output) && File.read(output) == content
+    puts "Unchanged: #{entries.size} resources."
+  else
+    File.write(output + '.tmp', content)
+    File.rename(output + '.tmp', output)
+    puts "Generated _data/resources.json: #{entries.size} resources."
+  end
+  warnings.each { |w| warn "REVIEW: #{w}" }
+  puts 'No duplicate URLs or malformed entries.'
+rescue ArgumentError, SystemCallError => e
+  abort "Resource sync failed: #{e.message}"
+end

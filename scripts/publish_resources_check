@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")/.."
+ruby scripts/sync_resources "$@"
+ruby tests/resources.rb
+./scripts/build
+bundle exec ruby scripts/check_site

@@ -1,0 +1,41 @@
+---
+layout: default
+title: Resources
+description: Books, guides, tools, and articles for engineering, AI systems, career development, and finance.
+permalink: /resources/
+---
+<div class="browse-page resources-page" data-resources>
+  <header class="browse-heading"><p class="eyebrow">Systems in Practice · Resources</p><h1>Resources</h1><p>My reading and reference collection, organized by purpose. Browse a topic, find a useful guide, or see what I’m reading next.</p></header>
+  {% assign entries = site.data.resources %}
+  {% assign topics = entries | map: 'topics' | join: '|' | split: '|' | uniq | sort %}
+  {% assign purposes = entries | map: 'purpose' | uniq %}
+  {% assign types = entries | map: 'type' | uniq | sort %}
+  <form class="browse-controls" hidden role="search" aria-label="Find resources">
+    <label class="search-field">Search resources<input type="search" name="q" placeholder="Search titles, summaries, or topics" autocomplete="off"></label>
+    <label>Topic<select name="topic"><option value="">All topics</option>{% for topic in topics %}<option value="{{ topic | escape }}">{{ topic | escape }}</option>{% endfor %}</select></label>
+    <label>Purpose<select name="purpose"><option value="">All purposes</option>{% for purpose in purposes %}<option value="{{ purpose }}">{{ purpose | replace: '-', ' ' | capitalize }}</option>{% endfor %}</select></label>
+    <label>Type<select name="type"><option value="">All types</option>{% for type in types %}<option value="{{ type }}">{{ type | capitalize }}</option>{% endfor %}</select></label>
+    <label>Reading status<select name="status"><option value="">All statuses</option><option value="to-read">To read</option><option value="reading">Reading</option><option value="read">Read</option><option value="deprioritized">Deprioritized</option></select></label>
+    <button type="reset">Clear filters</button>
+  </form>
+  <p class="result-count" aria-live="polite" aria-atomic="true" data-results>{{ entries.size }} resources · grouped by purpose</p>
+  {% for purpose in purposes %}
+  <section data-resource-group aria-labelledby="purpose-{{ purpose }}"><h2 id="purpose-{{ purpose }}">{{ purpose | replace: '-', ' ' | capitalize }}</h2>
+    {% assign group = entries | where: 'purpose', purpose %}
+    {% for resource in group %}
+    <article class="reading-row" data-resource data-topics="{{ resource.topics | jsonify | escape }}" data-purpose="{{ resource.purpose }}" data-type="{{ resource.type }}" data-status="{{ resource.status }}">
+      <div class="reading-date"><span>{{ resource.type | capitalize }}</span><span>{{ resource.status | replace: '-', ' ' | capitalize }}</span></div>
+      <div class="reading-copy"><h3><a href="{{ resource.url | escape }}" rel="external noreferrer">{{ resource.title | escape }}</a></h3>
+        {% if resource.summary != '' %}<p>{{ resource.summary | escape }}</p>{% else %}<p>Summary not yet added.</p>{% endif %}
+        <div class="reading-topics">{% for topic in resource.topics %}<span>{{ topic | escape }}</span>{% endfor %}</div>
+        {% if resource.notes %}<details><summary>Collection notes</summary><p>{{ resource.notes | escape }}</p></details>{% endif %}
+        <a class="read-link" href="{{ resource.url | escape }}" rel="external noreferrer">Visit resource <span aria-hidden="true">↗</span><span class="resource-sr-only">: {{ resource.title | escape }}</span></a>
+      </div>
+    </article>
+    {% endfor %}
+  </section>
+  {% endfor %}
+  <p class="empty-results" hidden data-empty>No resources match these filters. Try another search or clear the filters.</p>
+  <noscript><p>All resources are listed below by purpose. Use your browser’s Find command to search.</p></noscript>
+</div>
+<script src="{{ '/assets/js/resources.js' | relative_url }}" defer></script>
