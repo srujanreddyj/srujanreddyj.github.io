@@ -27,17 +27,23 @@ use_math: true
 google_analytics: UA-157263530-1
 
 # Everything below here can be ignored, unless you want to change the theme entirely
-theme: minima
-remote_theme: ngzhio/jekyll-theme-hamilton
+# The Hamilton theme's files live in this repo (_layouts, _includes, _sass), so
+# no theme is downloaded at build time. Plugins come from the Gemfile's
+# :jekyll_plugins group; the ones named here are the ones this site relies on.
 plugins:
-  - jekyll-theme-hamilton
   - jekyll-feed
   - jekyll-gist
   - jekyll-octicons
   - jekyll-github-metadata
   - jekyll-sitemap
-  - jekyll-remote-theme
   - jekyll-redirect-from
+
+# Settings the old "github-pages" gem applied silently, now written down.
+future: true
+gist:
+  noscript: false
+sass:
+  style: compact   # one line per CSS rule, as before
 
 feed:
   excerpt_only: true
@@ -73,8 +79,12 @@ titles_from_headings:
 highlighter: rouge
 markdown: kramdown
 kramdown:
-  math_engine: katex
+  # mathjax, as the old github-pages gem forced; katex would need an extra gem.
+  math_engine: mathjax
   input: GFM
   auto_ids: true
+  gfm_quirks: paragraph_end
+  syntax_highlighter_opts:
+    default_lang: plaintext
   hard_wrap: false
   syntax_highlighter: rouge
