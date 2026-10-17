@@ -1964,9 +1964,12 @@ html[data-theme="dark"] .hero-figure img {
   border-radius: 0;
 }
 
+/* Rows touch (no margin) so the hover highlight never drops out between them,
+   and a click anywhere in the list lands on a row. The extra 3px of padding
+   top and bottom keeps the same spacing the 6px margin used to give. */
 .toc-nav ul li a {
-  margin-bottom: 6px;
-  padding: 10px 12px;
+  margin-bottom: 0;
+  padding: 13px 12px;
   color: var(--site-muted) !important;
   border: 0 !important;
   border-radius: var(--site-radius);
@@ -2448,5 +2451,21 @@ html[data-theme="dark"] .highlight span {
 
   .is-home .post-card-meta {
     font-size: 0.82rem;
+  }
+}
+
+/* People who turn on "Reduce motion" on their phone or computer should see
+   cards stay put. The home page cards already follow this (discovery.scss);
+   this covers the case-study cards and the older home cards, which lift 3px
+   on hover. The border and shadow still change, so hover is still visible. */
+@media (prefers-reduced-motion: reduce) {
+  .case-card,
+  .home-work-card {
+    transition: none;
+  }
+
+  .case-card:hover,
+  .home-work-card:hover {
+    transform: none;
   }
 }
