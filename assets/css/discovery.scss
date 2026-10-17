@@ -1,9 +1,12 @@
 ---
 ---
 /* Discovery and reading layouts. Existing case-study styles remain in pro.scss. */
+/* Page background (light mode): a soft dot every 24px. Dots replaced the old
+   graph-paper lines, which ran under the text and pulled the eye while reading.
+   Raise the 0.15 to make the dots stronger, lower it to make them fainter. */
 body {
-  background: linear-gradient(var(--site-dot-soft) 1px, transparent 1px), linear-gradient(90deg, var(--site-dot-soft) 1px, transparent 1px), var(--site-bg) !important;
-  background-size: 48px 48px !important;
+  background: radial-gradient(circle, rgba(118, 106, 91, 0.15) 1px, transparent 1.5px), var(--site-bg) !important;
+  background-size: 24px 24px !important;
 }
 html[data-theme="dark"] body { background: var(--site-bg) !important; }
 [hidden] { display: none !important; }
