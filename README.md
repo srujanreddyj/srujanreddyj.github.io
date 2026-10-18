@@ -15,7 +15,7 @@ Use `./scripts/build` in deployment pipelines. It validates public metadata and 
 
 `./scripts/server` validates metadata, updates topic pages, then starts the local preview. Browser behavior checks live in `tests/browser.cjs`; run them against the preview with Playwright installed and `SITE_URL` set to its origin. `PLAYWRIGHT_MODULE` can point to an existing Playwright installation.
 
-The GitHub workflow checks the build and reader-access code. It does not deploy. GitHub reports this repository is public and Pages currently uses legacy branch builds. Before using validation as a deployment gate, switch Pages to GitHub Actions and publish only the validated build. This implementation does not change that account setting. Cloudflare's checked-in build command already uses `./scripts/build`.
+The GitHub workflow checks every push. On `master`, it publishes the checked build to GitHub Pages; a push that fails a check never reaches the live site. GitHub Pages is the only published copy. The old Cloudflare copy at `srujanenglabs.jsrujanreddy.workers.dev` now forwards every visitor to the same page here (`deployment/forward/worker.js`, deployed with `npx wrangler deploy`).
 
 ## Publish public writing
 

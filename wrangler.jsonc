@@ -1,13 +1,8 @@
 {
+  // The old Cloudflare copy of this site, now a forwarding address to GitHub
+  // Pages. Deploy with `npx wrangler deploy` after changing deployment/forward/.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "srujanenglabs",
-  "compatibility_date": "2026-05-27",
-  "build": {
-    "command": "./scripts/build"
-  },
-  "assets": {
-    "directory": "./_site",
-    "html_handling": "auto-trailing-slash",
-    "not_found_handling": "404-page"
-  }
+  "main": "deployment/forward/worker.js",
+  "compatibility_date": "2026-10-18"
 }
