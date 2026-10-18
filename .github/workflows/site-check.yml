@@ -1,3 +1,5 @@
+# Checks every push. On master, publishes the checked build to GitHub Pages,
+# so a change that fails a check never reaches the live site.
 name: Check site and reader access
 on:
   push:
@@ -21,6 +23,29 @@ jobs:
       - run: ruby tests/content_policy.rb
       - run: bundle exec ruby tests/private_resources.rb
       - run: ./scripts/build
+        env:
+          JEKYLL_ENV: production
       - run: bundle exec ruby scripts/check_site
       - run: npm ci --ignore-scripts --prefix deployment/readers
       - run: npm test --prefix deployment/readers
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    # Only this job may publish; it runs one at a time so pushes don't race.
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
