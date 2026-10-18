@@ -48,6 +48,10 @@ sass:
 feed:
   excerpt_only: true
 
+# Public Raindrop.io folder shown on /resources/. Save a link into this folder
+# and it appears on the site; nothing to build or commit.
+raindrop_public_url: "https://jsrujanreddy.raindrop.page/public-76222164"
+
 reader_library_url: "https://systems-in-practice-library.jsrujanreddy.workers.dev"
 
 exclude:

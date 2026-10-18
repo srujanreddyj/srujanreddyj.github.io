@@ -47,4 +47,4 @@ All files under `references/` and `presentations/` are restricted. They have bee
 
 ## Resources directory
 
-The public `/resources/` directory builds from committed `_data/resources.json`. Edit the collection in Obsidian, then run `OBSIDIAN_VAULT="/path/to/vault" ./scripts/publish_resources_check`. Review the generated diff, commit, and push. Google Drive syncs the source notes; Git publishes the directory. See [the resource workflow](scripts/RESOURCES.md) for entry syntax, validation, and source cleanup notes.
+The public `/resources/` page shows the **Public** folder in Raindrop.io. To add a link, save it into that folder with the Raindrop browser extension or phone app; the page updates on its own, with no build or commit. Keep private links in Raindrop's **Private** folder. The folder address is `raindrop_public_url` in `_config.yml`.
