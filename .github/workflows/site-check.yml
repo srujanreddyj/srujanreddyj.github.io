@@ -25,6 +25,10 @@ jobs:
       - run: ./scripts/build
         env:
           JEKYLL_ENV: production
+          # The github-metadata plugin needs to know which repository this is, and a
+          # token to read its public details; the old Pages builder supplied both.
+          PAGES_REPO_NWO: ${{ github.repository }}
+          JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: bundle exec ruby scripts/check_site
       - run: npm ci --ignore-scripts --prefix deployment/readers
       - run: npm test --prefix deployment/readers
