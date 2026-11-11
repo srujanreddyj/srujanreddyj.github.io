@@ -50,5 +50,5 @@ end
 gem "wdm", "~> 0.1.1", :install_if => Gem.win_platform?
 
 # Kept from before: minimum safe versions of these two.
-gem "activesupport", "~> 7.2", ">= 7.2.3.1"
+gem "activesupport", "~> 8.0"
 gem "faraday", "~> 1.10", ">= 1.10.6"
